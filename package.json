@@ -1,0 +1,23 @@
+{
+  "name": "projet_5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RykesZ/projet_5.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RykesZ/projet_5/issues"
+  },
+  "homepage": "https://github.com/RykesZ/projet_5#readme",
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "sass": "^1.32.5"
+  }
+}
