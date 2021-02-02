@@ -8,21 +8,31 @@
     <title>Orinoco</title>
 </head>
 
-<body>
+<body onload="javascript:getProductList()">
     <div class="container">
         <header class="row">
-            <nav class="col navbar navbar-expand-lg bg-dark">
+            <nav class="col navbar navbar-expand-lg bg-dark navbar-dark">
                 <a href="index.html">Orinoco</a>
             </nav>
         </header>
 
         <section class="row bg-light">
             <div class="col" id="merchList">
-
+                <div class="row">
+                    <div class="col-3">
+                        <h3>Nom de l'ours</h3>
+                    </div>
+                    <div class="col-3">
+                        <h3>Description</h3>
+                    </div>
+                    <div class="col-2">
+                        <h3>Prix</h3>
+                    </div>
+                    <div class="col-3">
+                        <h3>Apparence</h3>
+                    </div>
+                </div>
             </div>
-            <!--<div class="col-3">
-                <p id="result"></p>
-            </div>-->
         </section>
 
         <footer>

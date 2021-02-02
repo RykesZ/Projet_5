@@ -1,5 +1,7 @@
 const result = document.getElementById('result');
 const merchList = document.getElementById('merchList');
+const productPresentation = document.getElementById('productPresentation');
+let currentProductId;
 
 const api = 'http://localhost:3000/api/teddies';
 
@@ -25,20 +27,31 @@ function makeRequest(verb, url, data) {
     });
 }
 
+const getCurrentProductId = (event) => {
+    event.stopPropagation();
+    currentProductId = event.target.id;
+};
+
 async function getProductList() {
     try {
         const requestPromise = makeRequest('GET', api + '/');
         const productList = await requestPromise;
-        //let firstProduct = productList[0];
-        //result.textContent = firstProduct.name;
         for (let i = 0; i < productList.length; ++i) {
             const newProduct = document.createElement("div");
             newProduct.classList.add("row");
 
             const productName = document.createElement("div");
+            const linkName = document.createElement("a");
+            const linkNameTextContent = document.createElement("p");
             productName.classList.add("col-3");
-            productName.textContent = productList[i].name;
+            linkNameTextContent.textContent = productList[i].name;
+            linkName.setAttribute("id", productList[i]._id);
+            linkName.setAttribute("href", "./public/pages/produit.html");
+            linkName.appendChild(linkNameTextContent);
+            productName.appendChild(linkName);
             newProduct.appendChild(productName);
+
+            //linkName.addEventListener('click', getCurrentProductId());
 
             const productDescription = document.createElement("div");
             productDescription.classList.add("col-3");
@@ -61,8 +74,25 @@ async function getProductList() {
             merchList.appendChild(newProduct);
         }
     } catch (errorResponse) {
-        result.textContent = errorResponse.error;
+        //result.textContent = errorResponse.error;
     };
 };
 
-getProductList();
+async function getProductDetails(id) {
+    try {
+        const requestPromise = makeRequest('GET', api + '/:_' + currentProductId);
+        const productDetails = await requestPromise;
+
+        const newProduct = document.createElement("div");
+        newProduct.classList.add("row");
+        const verifId = document.createElement("div");
+        verifId.classList.add("col");
+        verifId.textContent = currentProductId;
+
+        newProduct.appendChild(verifId);
+        productPresentation.appendChild(newProduct);
+
+    } catch (errorResponse) {
+        //result.textContent = errorResponse.error;
+    };
+};
