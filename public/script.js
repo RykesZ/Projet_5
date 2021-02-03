@@ -1,7 +1,6 @@
 const result = document.getElementById('result');
 const merchList = document.getElementById('merchList');
 const productPresentation = document.getElementById('productPresentation');
-let currentProductId;
 
 const api = 'http://localhost:3000/api/teddies';
 
@@ -27,10 +26,10 @@ function makeRequest(verb, url, data) {
     });
 }
 
-const getCurrentProductId = (event) => {
+/*const getCurrentProductId = (event) => {
     event.stopPropagation();
     currentProductId = event.target.id;
-};
+};*/
 
 async function getProductList() {
     try {
@@ -45,13 +44,15 @@ async function getProductList() {
             const linkNameTextContent = document.createElement("p");
             productName.classList.add("col-3");
             linkNameTextContent.textContent = productList[i].name;
-            linkName.setAttribute("id", productList[i]._id);
+            linkNameTextContent.setAttribute("id", productList[i]._id);
             linkName.setAttribute("href", "./public/pages/produit.html");
             linkName.appendChild(linkNameTextContent);
             productName.appendChild(linkName);
             newProduct.appendChild(productName);
-
-            //linkName.addEventListener('click', getCurrentProductId());
+            linkName.addEventListener('click', function(event) {
+                event.stopPropagation();
+                sessionStorage.setItem('currentProductId', event.target.id);
+            });
 
             const productDescription = document.createElement("div");
             productDescription.classList.add("col-3");
@@ -80,14 +81,15 @@ async function getProductList() {
 
 async function getProductDetails(id) {
     try {
-        const requestPromise = makeRequest('GET', api + '/:_' + currentProductId);
+        let id = sessionStorage.getItem('currentProductId');
+        const requestPromise = makeRequest('GET', api + '/' + id);
         const productDetails = await requestPromise;
 
         const newProduct = document.createElement("div");
         newProduct.classList.add("row");
         const verifId = document.createElement("div");
         verifId.classList.add("col");
-        verifId.textContent = currentProductId;
+        verifId.textContent = id;
 
         newProduct.appendChild(verifId);
         productPresentation.appendChild(newProduct);
