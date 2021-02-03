@@ -2,6 +2,10 @@ div {
     background-color:seashell;
 }
 
-img {
+.thumbnail {
     max-width: 300px;
+}
+
+.productImage {
+    width: 100%;
 }

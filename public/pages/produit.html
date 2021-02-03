@@ -10,9 +10,52 @@
 
 <body onload="javascript:getProductDetails()">
     <div class="container" id="productPresentation">
+        <header class="row">
+            <nav class="col navbar navbar-expand-lg bg-dark navbar-dark">
+                <a href="index.html">Orinoco</a>
+            </nav>
+        </header>
         <div class="row">
-            <div class="col-5">
-                <img src="" alt="" id="imageProduit">
+            <div class="col-6">
+                <img src="" alt="" id="productImage">
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col">
+                        <p id="name"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p id="price"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            <label for="color">
+                                <span>Color choice</span>
+                            </label>
+                            <select name="bearColor" id="color">
+                                
+                            </select>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p id="description"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>
+                    <button id="addCart">
+                        Add to my cart
+                    </button>
+                </p>
             </div>
         </div>
     </div>
