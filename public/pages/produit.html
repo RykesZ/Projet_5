@@ -12,7 +12,7 @@
     <div class="container" id="productPresentation">
         <header class="row">
             <nav class="col navbar navbar-expand-lg bg-dark navbar-dark">
-                <a href="index.html">Orinoco</a>
+                <a href="../../index.html">Orinoco</a>
             </nav>
         </header>
         <div class="row">
@@ -51,11 +51,11 @@
         </div>
         <div class="row">
             <div class="col">
-                <p>
-                    <button id="addCart">
-                        Add to my cart
-                    </button>
-                </p>
+                <form id="addCartForm">
+                    <label for="articleNumber">Number wanted :</label>
+                    <input type="number" name="number_of_article" id="articleNumber" value="1" min="1" max="99" required>
+                    <input type="submit" value="Add to my cart">
+                </form>
             </div>
         </div>
     </div>

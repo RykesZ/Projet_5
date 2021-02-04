@@ -9,3 +9,11 @@ div {
 .productImage {
     width: 100%;
 }
+
+input:invalid {
+    border: 2px solid red;
+  }
+  
+  input:valid {
+    border: 1px solid black;
+  }
