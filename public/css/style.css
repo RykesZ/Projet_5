@@ -14,6 +14,10 @@ input:invalid {
     border: 2px solid red;
   }
   
-  input:valid {
+input:valid {
     border: 1px solid black;
-  }
+}
+
+a {
+    margin-right: 50px;
+}

@@ -4,6 +4,7 @@ const merchList = document.getElementById('merchList');
 const cartList = document.getElementById('cartList');
 const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
+const totalPriceText = document.getElementById('totalPrice');
 var cartItems = [];
 class onSaleProduct {
     constructor(id, count) {
@@ -177,34 +178,78 @@ async function getCartDetails() {
         }
         // Récupère la variable de session cartItems et transfère son contenu dans l'array temporaire cartItems
         cartItems = JSON.parse(sessionStorage.getItem('cartItems'));
+        console.log(cart);
 
+        console.log('So far so good 1');
 
         // Pour chacun des id présents dans cartItems, compare cet id (idTest) avec ceux présents des objets à la vente dans cart (cart[i].onSaleProduct.id).
         // Pour chaque ids identiques, ajoute 1 au count de cet id dans cart.
-        cartItems.forEach(function(idTest) {
+
+        cartItems.forEach(idTest => {
+            console.log('So far so good 2.1');
             for (let i = 0; i < cart.length; ++i) {
-                if (idTest === cart[i].onSaleProduct.id) {
-                    cart[i].onSaleProduct.count++;
+                console.log('So far so good 2.2');
+                if (idTest === cart[i].id) {
+                    console.log('So far so good 2.3');
+                    cart[i].count++;
+                    console.log(cart[i].count);
                 }
             }
         });
 
+        console.log('So far so good 3');
+
+        console.log(cartList);
+
+        let totalPrice = 0;
+
         // Regarde le count de chacun des items à la vente et crée une row sur la page pour chaque count > 0
         // Remplit cette row avec le nom et le prix à l'unité de l'item concerné, ainsi que le nombre de ce type d'item présent dans le panier
         for (let i = 0; i < cart.length; ++i) {
-            if (cart[i].onSaleProduct.count < 0) {
+            if (cart[i].count > 0) {
                 const newProduct = document.createElement("div");
                 newProduct.classList.add("row");
 
-                cartList.appendChild(newProduct);
-            }
-        }
+                // Crée la colonne nom du produit concerné avec un lien vers lui
+                const productName = document.createElement("div");
+                const linkName = document.createElement("a");
+                const linkNameTextContent = document.createElement("p");
+                productName.classList.add("col-3");
+                linkNameTextContent.textContent = productList[i].name;
+                linkNameTextContent.setAttribute("id", productList[i]._id);
+                linkName.setAttribute("href", "./produit.html");
+                linkName.appendChild(linkNameTextContent);
+                productName.appendChild(linkName);
+                newProduct.appendChild(productName);
+                linkName.addEventListener('click', function(event) {
+                event.stopPropagation();
+                sessionStorage.setItem('currentProductId', event.target.id);
+                });
 
-        /*for (let i = 0; i < cartItems.length; ++i) {
-            const requestPromise = makeRequest('GET', api + '/' + cartItems[i]);
-            const cartItemDetails = await requestPromise;
-        }*/
+                // Crée la colonne prix du produit concerné
+                const productPrice = document.createElement("div");
+                productPrice.classList.add("col-3");
+                productPrice.textContent = productList[i].price;
+                newProduct.appendChild(productPrice);
+
+                // Crée la colonne nombre d'exemplaires produit conerné dans le panier
+                const productCount = document.createElement("div");
+                productCount.classList.add("col-3");
+                productCount.textContent = cart[i].count;
+                newProduct.appendChild(productCount);
+
+                // Ajoute la row à la page
+                cartList.appendChild(newProduct);
+
+                console.log(totalPrice);
+                // Calcule le nouveau prix total avec les articles ajoutés
+                totalPrice += (productList[i].price * cart[i].count);
+            }
+            // Affiche le prix final sur la page
+            totalPriceText.textContent = totalPrice;
+        }
+        console.log('Everything went right');
     } catch (errorResponse) {
-        
+        console.log('Something went wrong');
     }
 };
