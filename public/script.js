@@ -5,7 +5,7 @@ const cartList = document.getElementById('cartList');
 const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
 const totalPriceText = document.getElementById('totalPrice');
-var cartItems = [];
+// var cartItems = [];
 class onSaleProduct {
     constructor(id, count) {
         this.id = id;
@@ -14,24 +14,6 @@ class onSaleProduct {
 };
 
 const api = 'http://localhost:3000/api/teddies';
-
-// Initialisation de la variable de session cartItems (contenu du panier, type string) et empêchement de la réinitialiser grâce au passage de initialised en 'true'
-// La variable de session cartItems permet de récupérer le contenu du panier de la session à tout moment car elle est permanente dans la session
-// Lorsqu'on veut la modifier, on utilise JSON.parse() pour transférer son contenu dans l'array temporaire cartItems, on manipule l'array comme on veut,
-// puis on utilise JSON.stringify() pour transférer le contenu de l'array dans la variable permanente à la session
-const cartInitialisation = () => {
-    if (sessionStorage.getItem('initialised') === 'true') {
-        console.log(sessionStorage.getItem('initialised'))
-        console.log(sessionStorage.getItem('cartItems'))
-    } else {
-        console.log(sessionStorage.getItem('initialised'))
-        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-        sessionStorage.setItem('initialised', 'true');
-        console.log(sessionStorage.getItem('initialised'))
-        console.log(sessionStorage.getItem('cartItems'))
-    }
-}
-cartInitialisation();
 
 // Création de la fonction générique de requête AJAX
 function makeRequest(verb, url, data) {
@@ -55,6 +37,37 @@ function makeRequest(verb, url, data) {
         }
     });
 }
+
+// Initialisation de la variable de session cartPerma (type de produits en vente et combien 
+// par type dans le panier, variable de type string) et s'empêche de se réinitialiser dans la même session
+// La variable de session cartPerma permet d'accéder au panier à tout moment dans la session car elle est permanente durant toute la session
+// Lorsqu'on veut la modifier, on utilise JSON.parse() pour transférer son contenu dans un array temporaire, on modifie cet array comme on le souhaite, 
+// puis on utilise JSON.stringify() pour transférer le contenu de l'array temporaire dans la variable permanente à la session 
+async function cartInitialisation() {
+    // Si l'array permanent a déjà été initialisé, cette fonction n'a pas d'effet
+    if (sessionStorage.getItem('initialised') === 'true') {
+        console.log(sessionStorage.getItem('initialised'))
+        console.log(sessionStorage.getItem('cartPerma'))
+    } else {
+        // Déclaration de l'array temporaire qui va servir de modèle à l'array permanent
+        let cartTempo = [];
+        // Récupère la liste des produits en vente et leurs infos
+        const requestPromise = makeRequest('GET', api + '/');
+        const productList = await requestPromise;
+        // Crée une instance de onSaleProduct dans cartTempo, pour chaque type de produit en vente, et initialise son nombre à 0
+        for (let i = 0; i < productList.length; ++i) {
+            cartTempo[i] = new onSaleProduct(productList[i]._id, 0);
+        }
+        // Stringify l'array temporaire en array permanent en le stockant dans la variable de session cartPerma, et passe initialised en 'true' pour que cette partie ne se répète pas
+        sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+        console.log(sessionStorage.getItem('cartPerma'));
+        sessionStorage.setItem('initialised', 'true');
+    }
+}
+cartInitialisation();
+
+
+
 
 //Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
@@ -111,7 +124,7 @@ async function getProductList() {
 // Lancée sur la page produit
 // Fonction permettant à la page produit de récupérer les infos du produit choisi par une requête serveur utilisant l'id contenu dans
 // currentProductId, pour les afficher dans la page
-async function getProductDetails(id) {
+async function getProductDetails() {
     try {
         let id = sessionStorage.getItem('currentProductId');
         const requestPromise = makeRequest('GET', api + '/' + id);
@@ -141,26 +154,44 @@ async function getProductDetails(id) {
     };
 };
 
-// Si le formulaire d'ajout au panier existe sur la page, lui ajoute un eventListener de type submit (car vérification de l'entrée d'un nombre d'articles valide), puis
-// va récupérer la variable de session cartItems, parser son contenu en un array cartItems, push l'id du produit ajouté au panier dans cet array, 
-// stringifyer l'array cartItems pour le stocker dans la variable de session cartItems, et charger la page panier
 if (addCartForm !== null) {
     addCartForm.addEventListener('submit', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        console.log(cartItems);
+        // Déclaration de l'array temporaire
+        let cartTempo = [];
+        console.log(cartTempo);
+        // Récupération du nombre d'articles à ajouter au panier
         const articleNumber = document.getElementById('articleNumber');
-
-        cartItems = JSON.parse(sessionStorage.getItem('cartItems'));
-        console.log(cartItems);
-        cartItems.push(sessionStorage.getItem('currentProductId'));
-        console.log(cartItems);
-        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-        console.log(cartItems);
-        console.log(sessionStorage.getItem('cartItems'));
+        // Récupération de l'array du panier permanent
+        cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
+        console.log(cartTempo);
+        // Récupération de l'id du produit actuel en variable à tester
+        let idToTest = sessionStorage.getItem('currentProductId');
+        // Comparaison entre l'id du produit actuel et ceux de tous les produits en vente jusqu'à trouver le même, puis ajoute le nombre d'articles voulus dans le panier
+        for (let i = 0; i < cartTempo.length; i++) {
+            if (idToTest === cartTempo[i].id) {
+                cartTempo[i].count += parseInt(articleNumber.value);
+            }
+        }
+        // Retransfère l'array temporaire dans l'array permanent
+        sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+        console.log(sessionStorage.getItem('cartPerma'));
+        // Envoie vers la page du panier
         window.open('./panier.html', '_self');
     });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 // Lancée au chargement de la page panier, permet de traduire cartItems en produits visibles sur la page et leur associer le nombre
 // qu'il y en a dans le panier et leurs infos. Ex : si l'id 12345 sur retrouve 3 fois dans cartItems, la page affichera une row pour le produit à l'id 12345
@@ -168,34 +199,15 @@ if (addCartForm !== null) {
 async function getCartDetails() {
     try {
         // Déclaration de la variable qui va contenir les types d'articles à afficher sur la page et leur nombre
-        let cart = [];
+        let cartTempo = [];
         // Récupère la liste des produits en vente et leurs infos
         const requestPromise = makeRequest('GET', api + '/');
         const productList = await requestPromise;
-        // Crée une instance de onSaleProduct dans cart, pour chaque type de produit en vente, et initialise son nombre à 0
-        for (let i = 0; i < productList.length; ++i) {
-            cart[i] = new onSaleProduct(productList[i]._id, 0);
-        }
         // Récupère la variable de session cartItems et transfère son contenu dans l'array temporaire cartItems
-        cartItems = JSON.parse(sessionStorage.getItem('cartItems'));
-        console.log(cart);
+        cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
+        console.log(cartTempo);
 
         console.log('So far so good 1');
-
-        // Pour chacun des id présents dans cartItems, compare cet id (idTest) avec ceux présents des objets à la vente dans cart (cart[i].onSaleProduct.id).
-        // Pour chaque ids identiques, ajoute 1 au count de cet id dans cart.
-
-        cartItems.forEach(idTest => {
-            console.log('So far so good 2.1');
-            for (let i = 0; i < cart.length; ++i) {
-                console.log('So far so good 2.2');
-                if (idTest === cart[i].id) {
-                    console.log('So far so good 2.3');
-                    cart[i].count++;
-                    console.log(cart[i].count);
-                }
-            }
-        });
 
         console.log('So far so good 3');
 
@@ -206,8 +218,8 @@ async function getCartDetails() {
 
         // Regarde le count de chacun des items à la vente et crée une row sur la page pour chaque count > 0
         // Remplit cette row avec le nom et le prix à l'unité de l'item concerné, ainsi que le nombre de ce type d'item présent dans le panier
-        for (let i = 0; i < cart.length; ++i) {
-            if (cart[i].count > 0) {
+        for (let i = 0; i < cartTempo.length; ++i) {
+            if (cartTempo[i].count > 0) {
                 const newProduct = document.createElement("div");
                 newProduct.classList.add("row");
 
@@ -236,7 +248,7 @@ async function getCartDetails() {
                 // Crée la colonne nombre d'exemplaires produit conerné dans le panier
                 const productCount = document.createElement("div");
                 productCount.classList.add("col-3");
-                productCount.textContent = cart[i].count;
+                productCount.textContent = cartTempo[i].count;
                 newProduct.appendChild(productCount);
 
                 // Ajoute la row à la page
@@ -244,7 +256,7 @@ async function getCartDetails() {
 
                 console.log(totalPrice);
                 // Calcule le nouveau prix total avec les articles ajoutés
-                totalPrice += (productList[i].price * cart[i].count);
+                totalPrice += (productList[i].price * cartTempo[i].count);
             }
             // Affiche le prix final sur la page
             totalPriceText.textContent = totalPrice;
