@@ -201,6 +201,7 @@ async function getCartDetails() {
 
         console.log(cartList);
 
+        // Initialisation de la variable du prix final
         let totalPrice = 0;
 
         // Regarde le count de chacun des items à la vente et crée une row sur la page pour chaque count > 0
