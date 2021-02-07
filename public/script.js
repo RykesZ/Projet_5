@@ -66,9 +66,6 @@ async function cartInitialisation() {
 }
 cartInitialisation();
 
-
-
-
 //Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
 // du produit choisi se trouvant dans l'attribut id du texte du lien cliqué, et le stocker dans la variable de session currentProductId
@@ -85,15 +82,15 @@ async function getProductList() {
             const linkNameTextContent = document.createElement("p");
             productName.classList.add("col-3");
             linkNameTextContent.textContent = productList[i].name;
-            linkNameTextContent.setAttribute("id", productList[i]._id);
-            linkName.setAttribute("href", "./public/pages/produit.html");
+            /*linkNameTextContent.setAttribute("id", productList[i]._id);*/
+            linkName.setAttribute("href", "./public/pages/produit.html" + "?id=" + productList[i]._id);
             linkName.appendChild(linkNameTextContent);
             productName.appendChild(linkName);
             newProduct.appendChild(productName);
-            linkName.addEventListener('click', function(event) {
+            /*linkName.addEventListener('click', function(event) {
                 event.stopPropagation();
                 sessionStorage.setItem('currentProductId', event.target.id);
-            });
+            });*/
 
             const productDescription = document.createElement("div");
             productDescription.classList.add("col-3");
@@ -126,7 +123,12 @@ async function getProductList() {
 // currentProductId, pour les afficher dans la page
 async function getProductDetails() {
     try {
-        let id = sessionStorage.getItem('currentProductId');
+        /*let id = sessionStorage.getItem('currentProductId');*/
+        console.log('So far so good A');
+        let currentURL = new URL(window.location.href);
+        console.log('So far so good B');
+        let id = currentURL.searchParams.get('id');
+        console.log(id);
         const requestPromise = makeRequest('GET', api + '/' + id);
         const productDetails = await requestPromise;
 
@@ -167,7 +169,9 @@ if (addCartForm !== null) {
         cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
         console.log(cartTempo);
         // Récupération de l'id du produit actuel en variable à tester
-        let idToTest = sessionStorage.getItem('currentProductId');
+        /*et idToTest = sessionStorage.getItem('currentProductId');*/
+        let currentURL = new URL(window.location.href);
+        let idToTest = currentURL.searchParams.get('id');
         // Comparaison entre l'id du produit actuel et ceux de tous les produits en vente jusqu'à trouver le même, puis ajoute le nombre d'articles voulus dans le panier
         for (let i = 0; i < cartTempo.length; i++) {
             if (idToTest === cartTempo[i].id) {
@@ -182,20 +186,8 @@ if (addCartForm !== null) {
     });
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// Lancée au chargement de la page panier, permet de traduire cartItems en produits visibles sur la page et leur associer le nombre
-// qu'il y en a dans le panier et leurs infos. Ex : si l'id 12345 sur retrouve 3 fois dans cartItems, la page affichera une row pour le produit à l'id 12345
-// et affichera que 3 exemplaires sont présents dans le panier, ce qui permet de calculer le prix total
+// Lancée au chargement de la page panier, permet de traduire la variable permanente cartPerma en produits visibles sur la page et leur associer le nombre
+// qu'il y en a dans le panier et leurs infos
 async function getCartDetails() {
     try {
         // Déclaration de la variable qui va contenir les types d'articles à afficher sur la page et leur nombre
@@ -203,14 +195,9 @@ async function getCartDetails() {
         // Récupère la liste des produits en vente et leurs infos
         const requestPromise = makeRequest('GET', api + '/');
         const productList = await requestPromise;
-        // Récupère la variable de session cartItems et transfère son contenu dans l'array temporaire cartItems
+        // Récupère la variable de session cartPerma et transfère son contenu dans l'array temporaire cartTempo
         cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
         console.log(cartTempo);
-
-        console.log('So far so good 1');
-
-        console.log('So far so good 3');
-
         console.log(cartList);
 
         // Initialisation de la variable du prix final
@@ -229,15 +216,15 @@ async function getCartDetails() {
                 const linkNameTextContent = document.createElement("p");
                 productName.classList.add("col-3");
                 linkNameTextContent.textContent = productList[i].name;
-                linkNameTextContent.setAttribute("id", productList[i]._id);
-                linkName.setAttribute("href", "./produit.html");
+                /*linkNameTextContent.setAttribute("id", productList[i]._id);*/
+                linkName.setAttribute("href", "./produit.html" + "?id=" + productList[i]._id);
                 linkName.appendChild(linkNameTextContent);
                 productName.appendChild(linkName);
                 newProduct.appendChild(productName);
-                linkName.addEventListener('click', function(event) {
+                /*linkName.addEventListener('click', function(event) {
                 event.stopPropagation();
                 sessionStorage.setItem('currentProductId', event.target.id);
-                });
+                });*/
 
                 // Crée la colonne prix du produit concerné
                 const productPrice = document.createElement("div");
@@ -251,6 +238,39 @@ async function getCartDetails() {
                 productCount.textContent = cartTempo[i].count;
                 newProduct.appendChild(productCount);
 
+                // Crée le bouton de suppression du type d'article du panier
+                const removeArticle = document.createElement("div");
+                removeArticle.classList.add("col-3");
+                const removeButton = document.createElement("button");
+                removeArticle.appendChild(removeButton);
+                removeButton.setAttribute("type", "button");
+                removeButton.textContent = "Remove";
+
+                removeButton.addEventListener("click", function(event) {
+                    event.stopPropagation()
+                    // Retire les articles du count correspondant dans le panier
+
+                    // Récupération de l'id du produit actuel en variable à tester
+                    let idToTest = productList[i]._id;
+                    // Comparaison entre l'id du produit de la row et ceux de tous les produits en vente jusqu'à trouver le même, puis tous les articles de ce type du panier
+                    for (let a = 0; a < cartTempo.length; a++) {
+                        if (idToTest === cartTempo[a].id) {
+                            cartTempo[a].count = 0;
+                            // Retransfère l'array temporaire dans l'array permanent
+                            sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+                            console.log(cartTempo);
+                        }
+                    }
+
+
+
+
+                    // Retire la row de la page
+                    cartList.removeChild(newProduct);
+                });
+                newProduct.appendChild(removeArticle);
+
+
                 // Ajoute la row à la page
                 cartList.appendChild(newProduct);
 
@@ -261,6 +281,17 @@ async function getCartDetails() {
             // Affiche le prix final sur la page
             totalPriceText.textContent = totalPrice;
         }
+        const emptyButton = document.getElementById("emptyButton");
+        emptyButton.addEventListener("click", function(event) {
+            event.stopPropagation();
+            for (i = 0; i < cartTempo.length; i++) {
+                cartTempo[i].count = 0;
+            }
+            sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+            // Configurer la suppression de toutes les lignes de la page panier
+
+
+        });
         console.log('Everything went right');
     } catch (errorResponse) {
         console.log('Something went wrong');
