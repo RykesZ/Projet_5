@@ -4,12 +4,14 @@ const merchList = document.getElementById('merchList');
 const cartList = document.getElementById('cartList');
 const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
+const productPrices = [];
 const totalPriceText = document.getElementById('totalPrice');
 // var cartItems = [];
 class onSaleProduct {
-    constructor(id, count) {
+    constructor(id, count, price) {
         this.id = id;
         this.count = count;
+        this.price = price;
     }
 };
 
@@ -45,9 +47,9 @@ function makeRequest(verb, url, data) {
 // puis on utilise JSON.stringify() pour transférer le contenu de l'array temporaire dans la variable permanente à la session 
 async function cartInitialisation() {
     // Si l'array permanent a déjà été initialisé, cette fonction n'a pas d'effet
-    if (sessionStorage.getItem('initialised') === 'true') {
-        console.log(sessionStorage.getItem('initialised'))
-        console.log(sessionStorage.getItem('cartPerma'))
+    if (localStorage.getItem('initialised') === 'true') {
+        console.log(localStorage.getItem('initialised'))
+        console.log(localStorage.getItem('cartPerma'))
     } else {
         // Déclaration de l'array temporaire qui va servir de modèle à l'array permanent
         let cartTempo = [];
@@ -56,15 +58,25 @@ async function cartInitialisation() {
         const productList = await requestPromise;
         // Crée une instance de onSaleProduct dans cartTempo, pour chaque type de produit en vente, et initialise son nombre à 0
         for (let i = 0; i < productList.length; ++i) {
-            cartTempo[i] = new onSaleProduct(productList[i]._id, 0);
+            cartTempo[i] = new onSaleProduct(productList[i]._id, 0, productList[i].price);
         }
         // Stringify l'array temporaire en array permanent en le stockant dans la variable de session cartPerma, et passe initialised en 'true' pour que cette partie ne se répète pas
-        sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-        console.log(sessionStorage.getItem('cartPerma'));
-        sessionStorage.setItem('initialised', 'true');
+        localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+        console.log(localStorage.getItem('cartPerma'));
+        localStorage.setItem('initialised', 'true');
     }
 }
 cartInitialisation();
+
+const totalPriceCalc = () => {
+    totalPrice = 0;
+    let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
+    for (i = 0; i < cartTempo.length; i++) {
+        totalPrice += (cartTempo[i].price * cartTempo[i].count);
+    }
+    totalPriceText.textContent = totalPrice;
+    console.log(totalPrice);
+};
 
 //Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
@@ -82,15 +94,10 @@ async function getProductList() {
             const linkNameTextContent = document.createElement("p");
             productName.classList.add("col-3");
             linkNameTextContent.textContent = productList[i].name;
-            /*linkNameTextContent.setAttribute("id", productList[i]._id);*/
             linkName.setAttribute("href", "./public/pages/produit.html" + "?id=" + productList[i]._id);
             linkName.appendChild(linkNameTextContent);
             productName.appendChild(linkName);
             newProduct.appendChild(productName);
-            /*linkName.addEventListener('click', function(event) {
-                event.stopPropagation();
-                sessionStorage.setItem('currentProductId', event.target.id);
-            });*/
 
             const productDescription = document.createElement("div");
             productDescription.classList.add("col-3");
@@ -123,7 +130,7 @@ async function getProductList() {
 // currentProductId, pour les afficher dans la page
 async function getProductDetails() {
     try {
-        /*let id = sessionStorage.getItem('currentProductId');*/
+        /*let id = localStorage.getItem('currentProductId');*/
         console.log('So far so good A');
         let currentURL = new URL(window.location.href);
         console.log('So far so good B');
@@ -166,10 +173,10 @@ if (addCartForm !== null) {
         // Récupération du nombre d'articles à ajouter au panier
         const articleNumber = document.getElementById('articleNumber');
         // Récupération de l'array du panier permanent
-        cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
+        console.log(localStorage.getItem('cartPerma'))
+        cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
         console.log(cartTempo);
         // Récupération de l'id du produit actuel en variable à tester
-        /*et idToTest = sessionStorage.getItem('currentProductId');*/
         let currentURL = new URL(window.location.href);
         let idToTest = currentURL.searchParams.get('id');
         // Comparaison entre l'id du produit actuel et ceux de tous les produits en vente jusqu'à trouver le même, puis ajoute le nombre d'articles voulus dans le panier
@@ -179,8 +186,8 @@ if (addCartForm !== null) {
             }
         }
         // Retransfère l'array temporaire dans l'array permanent
-        sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-        console.log(sessionStorage.getItem('cartPerma'));
+        localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+        console.log(localStorage.getItem('cartPerma'));
         // Envoie vers la page du panier
         window.open('./panier.html', '_self');
     });
@@ -196,7 +203,7 @@ async function getCartDetails() {
         const requestPromise = makeRequest('GET', api + '/');
         const productList = await requestPromise;
         // Récupère la variable de session cartPerma et transfère son contenu dans l'array temporaire cartTempo
-        cartTempo = JSON.parse(sessionStorage.getItem('cartPerma'));
+        cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
         console.log(cartTempo);
         console.log(cartList);
 
@@ -223,7 +230,7 @@ async function getCartDetails() {
                 newProduct.appendChild(productName);
                 /*linkName.addEventListener('click', function(event) {
                 event.stopPropagation();
-                sessionStorage.setItem('currentProductId', event.target.id);
+                localStorage.setItem('currentProductId', event.target.id);
                 });*/
 
                 // Crée la colonne prix du produit concerné
@@ -232,11 +239,38 @@ async function getCartDetails() {
                 productPrice.textContent = productList[i].price;
                 newProduct.appendChild(productPrice);
 
-                // Crée la colonne nombre d'exemplaires produit conerné dans le panier
+                // Crée la colonne nombre d'exemplaires produit concerné dans le panier
                 const productCount = document.createElement("div");
                 productCount.classList.add("col-3");
-                productCount.textContent = cartTempo[i].count;
+                const productCountForm = document.createElement("form");
+                const productCountLabel = document.createElement("label");
+                productCountLabel.setAttribute("for", "articleNumber");
+                productCountLabel.textContent = "Currently in cart :";
+                const productCountInput = document.createElement("input");
+                productCountInput.setAttribute("type", "number");
+                productCountInput.setAttribute("name", "number_of_article");
+                productCountInput.setAttribute("id", "articleNumber" + i);
+                productCountInput.setAttribute("value", cartTempo[i].count);
+                productCountInput.setAttribute("min", "1");
+                productCountInput.setAttribute("max", "500");
+                productCountInput.setAttribute("required", "");
+                productCountForm.appendChild(productCountLabel);
+                productCountForm.appendChild(productCountInput);
+                productCount.appendChild(productCountForm);
                 newProduct.appendChild(productCount);
+                // Modifie la quantité de produits dans cartTempo en fonction de l'input modifié, puis transfère cette valeur dans cartPerma
+                productCountInput.addEventListener("change", function(event) {
+                    event.stopPropagation();
+                    let idToTest = productList[i]._id;
+                    for (let a = 0; a < cartTempo.length; a++) {
+                        if (idToTest === cartTempo[a].id) {
+                            cartTempo[a].count = productCountInput.value;
+                            localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+                            console.log(cartTempo);
+                            totalPriceCalc();
+                        };
+                    };
+                });
 
                 // Crée le bouton de suppression du type d'article du panier
                 const removeArticle = document.createElement("div");
@@ -245,52 +279,41 @@ async function getCartDetails() {
                 removeArticle.appendChild(removeButton);
                 removeButton.setAttribute("type", "button");
                 removeButton.textContent = "Remove";
-
                 removeButton.addEventListener("click", function(event) {
                     event.stopPropagation()
                     // Retire les articles du count correspondant dans le panier
 
                     // Récupération de l'id du produit actuel en variable à tester
                     let idToTest = productList[i]._id;
-                    // Comparaison entre l'id du produit de la row et ceux de tous les produits en vente jusqu'à trouver le même, puis tous les articles de ce type du panier
+                    // Comparaison entre l'id du produit de la row et ceux de tous les produits en vente jusqu'à trouver le même, puis retire tous les articles de ce type du panier
                     for (let a = 0; a < cartTempo.length; a++) {
                         if (idToTest === cartTempo[a].id) {
                             cartTempo[a].count = 0;
                             // Retransfère l'array temporaire dans l'array permanent
-                            sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+                            localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
                             console.log(cartTempo);
                         }
                     }
-
-
-
-
                     // Retire la row de la page
                     cartList.removeChild(newProduct);
+                    totalPriceCalc();
                 });
                 newProduct.appendChild(removeArticle);
-
-
                 // Ajoute la row à la page
                 cartList.appendChild(newProduct);
-
-                console.log(totalPrice);
-                // Calcule le nouveau prix total avec les articles ajoutés
-                totalPrice += (productList[i].price * cartTempo[i].count);
             }
-            // Affiche le prix final sur la page
-            totalPriceText.textContent = totalPrice;
         }
+        // Affiche le prix final sur la page
+        totalPriceCalc();
+        // Vide le panier et recharge la page
         const emptyButton = document.getElementById("emptyButton");
         emptyButton.addEventListener("click", function(event) {
             event.stopPropagation();
             for (i = 0; i < cartTempo.length; i++) {
                 cartTempo[i].count = 0;
             }
-            sessionStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-            // Configurer la suppression de toutes les lignes de la page panier
-
-
+            localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+            document.location.reload();
         });
         console.log('Everything went right');
     } catch (errorResponse) {
