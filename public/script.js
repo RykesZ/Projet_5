@@ -4,6 +4,7 @@ const merchList = document.getElementById('merchList');
 const cartList = document.getElementById('cartList');
 const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
+const orderForm = document.getElementById(orderForm);
 const productPrices = [];
 const totalPriceText = document.getElementById('totalPrice');
 // var cartItems = [];
@@ -319,4 +320,21 @@ async function getCartDetails() {
     } catch (errorResponse) {
         console.log('Something went wrong');
     }
+};
+
+if (orderForm !== null) {
+    orderForm.addEventListener('submit', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        
+    })
+}
+
+async function postOrder() {
+    try {
+        const requestPromise = makeRequest('POST', api + '/order', data);
+        const orderConfirmation = await requestPromise;
+    } catch (errorResponse) {
+
+    };
 };
