@@ -264,7 +264,7 @@ async function getCartDetails() {
                     let idToTest = productList[i]._id;
                     for (let a = 0; a < cartTempo.length; a++) {
                         if (idToTest === cartTempo[a].id) {
-                            cartTempo[a].count = productCountInput.value;
+                            cartTempo[a].count = parseInt(productCountInput.value);
                             localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
                             console.log(cartTempo);
                             totalPriceCalc();
