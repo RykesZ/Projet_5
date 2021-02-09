@@ -4,7 +4,7 @@ const merchList = document.getElementById('merchList');
 const cartList = document.getElementById('cartList');
 const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
-const orderForm = document.getElementById(orderForm);
+const orderForm = document.getElementById('orderForm');
 const productPrices = [];
 const totalPriceText = document.getElementById('totalPrice');
 // var cartItems = [];
@@ -78,6 +78,12 @@ const totalPriceCalc = () => {
     totalPriceText.textContent = totalPrice;
     console.log(totalPrice);
 };
+
+function fixedEncodeURIComponent (str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
 
 //Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
@@ -326,15 +332,79 @@ if (orderForm !== null) {
     orderForm.addEventListener('submit', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        
+        const alertExists = document.getElementById('alertMessage');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const address = document.getElementById('address'); 
+        const city = document.getElementById('city');
+        const email = document.getElementById('email');
+        const totalPrice = document.getElementById('totalPrice');
+        const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value) + "&totalPrice=" + totalPrice.textContent;
+        console.log(orderURL);
+        if (parseInt(totalPrice.textContent) > 0) {
+            window.open(orderURL, "_self");
+        } else if (alertExists === null) {
+            const container = document.getElementById('container');
+            const alertRow = document.createElement('div');
+            const alert = document.createElement('div');
+            const alertMessage = document.createElement('h3');
+            alertRow.classList.add('row');
+            alert.classList.add('col-12');
+            alert.appendChild(alertMessage);
+            alertRow.appendChild(alert);
+            container.appendChild(alertRow);
+            alertMessage.textContent = "You can't order emptiness !";
+            alertMessage.setAttribute('id', 'alertMessage');
+        }
     })
 }
 
 async function postOrder() {
     try {
+        let currentURL = new URL(window.location.href);
+        let firstName = currentURL.searchParams.get('firstName');
+        let lastName = currentURL.searchParams.get('lastName');
+        let address = currentURL.searchParams.get('address');
+        let city = currentURL.searchParams.get('city');
+        let email = currentURL.searchParams.get('email');
+        let contact = {
+            firstName: firstName,
+            lastName: lastName,
+            address: address,
+            city: city,
+            email: email
+        };
+        console.log(contact);
+        let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
+
+        let idList = [];
+        for (i = 0; i < cartTempo.length; i++) {
+            if (cartTempo[i].count > 0) {
+                idList.push(cartTempo[i].id);
+            }
+        };
+        console.log(idList);
+
+        let data = {
+            contact: contact,
+            products: idList
+        };
+        console.log(data);
+
         const requestPromise = makeRequest('POST', api + '/order', data);
         const orderConfirmation = await requestPromise;
-    } catch (errorResponse) {
+        console.log(orderConfirmation);
 
+        let totalPrice = currentURL.searchParams.get('totalPrice');
+
+        const priceAnnounce = document.getElementById('priceAnnounce');
+        const orderIdAnnounce = document.getElementById('orderIdAnnounce');
+
+        priceAnnounce.textContent = "You have ordered for " + totalPrice + "€ in goods.";
+        orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
+
+        localStorage.setItem('initialised', 'false');
+        cartInitialisation();
+    } catch (errorResponse) {
     };
 };

@@ -9,7 +9,7 @@
 </head>
 
 <body onload="javascript:getCartDetails()">
-    <div class="container">
+    <div class="container" id="container">
         <header class="row">
             <nav class="col navbar navbar-expand-lg bg-dark navbar-dark">
                 <a href="../../index.html">Orinoco</a>
@@ -21,7 +21,7 @@
                 <h2>Your order :</h2>
                 <div class="row">
                     <div class="col-3">
-                        <h3>Article</h3>
+                        <h3>Article(s)</h3>
                     </div>
                     <div class="col-3">
                         <h3>Price</h3>
@@ -63,31 +63,31 @@
                     <div class="form-group row">
                         <label for="firstName" class="col-2 col-form-label">First Name :</label>
                         <div class="col-10">
-                            <input type="text" class="form-control" name="first_name" id="firstName" placeholder="Ex: Neville" required>
+                            <input type="text" class="form-control" name="first_name" id="firstName" placeholder="Ex: Neville" minlength="2" maxlength="50" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="lastName" class="col-2 col-form-label">Last Name :</label>
                         <div class="col-10">
-                            <input type="text" class="form-control" name="last_name" id="lastName" placeholder="Ex: Longbottom" required>
+                            <input type="text" class="form-control" name="last_name" id="lastName" placeholder="Ex: Longbottom" minlength="2" maxlength="50" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="adress" class="col-2">Adress :</label>
+                        <label for="address" class="col-2">Address :</label>
                         <div class="col-10">
-                            <input type="text" class="form-control" name="adress" id="adress" placeholder="Ex: 90 Ponsmere Road" required>
+                            <input type="text" class="form-control" name="address" id="address" placeholder="Ex: 90 Ponsmere Road" maxlength="100" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="city" class="col-2">City :</label>
                         <div class="col-10">
-                            <input type="text" class="form-control" name="city" id="city" placeholder="Ex: BELLINGDON" required>
+                            <input type="text" class="form-control" name="city" id="city" placeholder="Ex: BELLINGDON" maxlength="58" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="email" class="col-2">E-mail :</label>
                         <div class="col-10">
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Ex: name@example.com" required>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Ex: name@example.com" maxlength="50" required>
                             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                         </div>
                     </div>
