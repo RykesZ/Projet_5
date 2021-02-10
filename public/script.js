@@ -7,7 +7,7 @@ const addCartForm = document.getElementById('addCartForm');
 const orderForm = document.getElementById('orderForm');
 const productPrices = [];
 const totalPriceText = document.getElementById('totalPrice');
-// var cartItems = [];
+// Création de la classe d'objets en vente qui sera utilisée dans les paniers temporaire et permanent
 class onSaleProduct {
     constructor(id, count, price) {
         this.id = id;
@@ -41,11 +41,11 @@ function makeRequest(verb, url, data) {
     });
 }
 
-// Initialisation de la variable de session cartPerma (type de produits en vente et combien 
-// par type dans le panier, variable de type string) et s'empêche de se réinitialiser dans la même session
-// La variable de session cartPerma permet d'accéder au panier à tout moment dans la session car elle est permanente durant toute la session
+// Initialisation de la variable locale cartPerma (type de produits en vente et combien 
+// par type dans le panier, variable de type string) et s'empêche de se réinitialiser à chaque chargement
+// La variable locale cartPerma permet d'accéder au panier à tout moment car elle stockée localement dans le navigateur
 // Lorsqu'on veut la modifier, on utilise JSON.parse() pour transférer son contenu dans un array temporaire, on modifie cet array comme on le souhaite, 
-// puis on utilise JSON.stringify() pour transférer le contenu de l'array temporaire dans la variable permanente à la session 
+// puis on utilise JSON.stringify() pour transférer le contenu de l'array temporaire dans la variable locale 
 async function cartInitialisation() {
     // Si l'array permanent a déjà été initialisé, cette fonction n'a pas d'effet
     if (localStorage.getItem('initialised') === 'true') {
@@ -61,14 +61,18 @@ async function cartInitialisation() {
         for (let i = 0; i < productList.length; ++i) {
             cartTempo[i] = new onSaleProduct(productList[i]._id, 0, productList[i].price);
         }
-        // Stringify l'array temporaire en array permanent en le stockant dans la variable de session cartPerma, et passe initialised en 'true' pour que cette partie ne se répète pas
+        // Stringify l'array temporaire en array permanent en le stockant dans la variable locale cartPerma, et passe initialised en 'true' pour que cette partie ne se répète pas
         localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
         console.log(localStorage.getItem('cartPerma'));
         localStorage.setItem('initialised', 'true');
     }
 }
+// Lance la fonction d'initialisation du panier si possible, quelle que soit la page, pour permettre à un utilisateur arrivant sur l'une
+// d'elles d'avoir un panier fonctionnel
 cartInitialisation();
 
+// Fonction de calcul du prix total du panier : récupère index par index le prix de l'item et son nombre dans le panier,
+// multiplie les deux et ajoute le résultat au prix total
 const totalPriceCalc = () => {
     totalPrice = 0;
     let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
@@ -79,19 +83,22 @@ const totalPriceCalc = () => {
     console.log(totalPrice);
 };
 
+// Fonction assurant que les input de l'utilisateur sont correctement convertis en une chaîne de caractères utilisable pour une URL
 function fixedEncodeURIComponent (str) {
     return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
   }
 
-//Lancée sur la page index (vue de la liste des produits en vente)
+// Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
 // du produit choisi se trouvant dans l'attribut id du texte du lien cliqué, et le stocker dans la variable de session currentProductId
 async function getProductList() {
     try {
+        // Récupère la liste des produits en vente par une requête serveur
         const requestPromise = makeRequest('GET', api + '/');
         const productList = await requestPromise;
+        // Pour chaque produit en vente, crée une row contenant son nom avec un lien vers sa page produit, sa description, son prix et son image
         for (let i = 0; i < productList.length; ++i) {
             const newProduct = document.createElement("div");
             newProduct.classList.add("row");
@@ -120,7 +127,7 @@ async function getProductList() {
             productImage.classList.add("col-3");
             const imageContent = document.createElement("img");
             imageContent.setAttribute("src", productList[i].imageUrl);
-            imageContent.setAttribute("alt", "Ours en peluche");
+            imageContent.setAttribute("alt", "Teddy Bear");
             imageContent.classList.add("thumbnail");
             productImage.appendChild(imageContent);
             newProduct.appendChild(productImage);
@@ -128,21 +135,16 @@ async function getProductList() {
             merchList.appendChild(newProduct);
         }
     } catch (errorResponse) {
-        //result.textContent = errorResponse.error;
     };
 };
 
 // Lancée sur la page produit
 // Fonction permettant à la page produit de récupérer les infos du produit choisi par une requête serveur utilisant l'id contenu dans
-// currentProductId, pour les afficher dans la page
+// les paramètres de l'URL, pour les afficher dans la page
 async function getProductDetails() {
     try {
-        /*let id = localStorage.getItem('currentProductId');*/
-        console.log('So far so good A');
         let currentURL = new URL(window.location.href);
-        console.log('So far so good B');
         let id = currentURL.searchParams.get('id');
-        console.log(id);
         const requestPromise = makeRequest('GET', api + '/' + id);
         const productDetails = await requestPromise;
 
@@ -164,25 +166,21 @@ async function getProductDetails() {
             newOption.textContent = productDetails.colors[i];
             colorChoice.appendChild(newOption);
         }
-
     } catch (errorResponse) {
-        //result.textContent = errorResponse.error;
     };
 };
 
+// Ajout d'un écouteur d'événement submit sur le formulaire d'ajout du nombre d'articles voulus au panier s'il existe sur la page
 if (addCartForm !== null) {
     addCartForm.addEventListener('submit', function(event) {
         event.stopPropagation();
         event.preventDefault();
         // Déclaration de l'array temporaire
         let cartTempo = [];
-        console.log(cartTempo);
         // Récupération du nombre d'articles à ajouter au panier
         const articleNumber = document.getElementById('articleNumber');
         // Récupération de l'array du panier permanent
-        console.log(localStorage.getItem('cartPerma'))
         cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
-        console.log(cartTempo);
         // Récupération de l'id du produit actuel en variable à tester
         let currentURL = new URL(window.location.href);
         let idToTest = currentURL.searchParams.get('id');
@@ -194,14 +192,13 @@ if (addCartForm !== null) {
         }
         // Retransfère l'array temporaire dans l'array permanent
         localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-        console.log(localStorage.getItem('cartPerma'));
         // Envoie vers la page du panier
         window.open('./panier.html', '_self');
     });
 }
 
-// Lancée au chargement de la page panier, permet de traduire la variable permanente cartPerma en produits visibles sur la page et leur associer le nombre
-// qu'il y en a dans le panier et leurs infos
+// Lancée au chargement de la page panier, permet de traduire la variable permanente cartPerma en produits visibles sur la page et leur associer 
+// le nombre qu'il y en a dans le panier et leurs infos
 async function getCartDetails() {
     try {
         // Déclaration de la variable qui va contenir les types d'articles à afficher sur la page et leur nombre
@@ -213,10 +210,6 @@ async function getCartDetails() {
         cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
         console.log(cartTempo);
         console.log(cartList);
-
-        // Initialisation de la variable du prix final
-        let totalPrice = 0;
-
         // Regarde le count de chacun des items à la vente et crée une row sur la page pour chaque count > 0
         // Remplit cette row avec le nom et le prix à l'unité de l'item concerné, ainsi que le nombre de ce type d'item présent dans le panier
         for (let i = 0; i < cartTempo.length; ++i) {
@@ -230,15 +223,10 @@ async function getCartDetails() {
                 const linkNameTextContent = document.createElement("p");
                 productName.classList.add("col-3");
                 linkNameTextContent.textContent = productList[i].name;
-                /*linkNameTextContent.setAttribute("id", productList[i]._id);*/
                 linkName.setAttribute("href", "./produit.html" + "?id=" + productList[i]._id);
                 linkName.appendChild(linkNameTextContent);
                 productName.appendChild(linkName);
                 newProduct.appendChild(productName);
-                /*linkName.addEventListener('click', function(event) {
-                event.stopPropagation();
-                localStorage.setItem('currentProductId', event.target.id);
-                });*/
 
                 // Crée la colonne prix du produit concerné
                 const productPrice = document.createElement("div");
@@ -287,9 +275,7 @@ async function getCartDetails() {
                 removeButton.setAttribute("type", "button");
                 removeButton.textContent = "Remove";
                 removeButton.addEventListener("click", function(event) {
-                    event.stopPropagation()
-                    // Retire les articles du count correspondant dans le panier
-
+                    event.stopPropagation();
                     // Récupération de l'id du produit actuel en variable à tester
                     let idToTest = productList[i]._id;
                     // Comparaison entre l'id du produit de la row et ceux de tous les produits en vente jusqu'à trouver le même, puis retire tous les articles de ce type du panier
@@ -312,26 +298,26 @@ async function getCartDetails() {
         }
         // Affiche le prix final sur la page
         totalPriceCalc();
-        // Vide le panier et recharge la page
+        // Ajoute un écouteur d'événement sur le bouton qui vide le panier et recharge la page
         const emptyButton = document.getElementById("emptyButton");
         emptyButton.addEventListener("click", function(event) {
             event.stopPropagation();
-            for (i = 0; i < cartTempo.length; i++) {
-                cartTempo[i].count = 0;
-            }
-            localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
+            // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
+            localStorage.setItem('initialised', 'false');
+            cartInitialisation();
             document.location.reload();
         });
-        console.log('Everything went right');
     } catch (errorResponse) {
         console.log('Something went wrong');
     }
 };
 
+// Ajout d'un écouteur d'événement submit sur le formulaire de commande s'il existe sur la page
 if (orderForm !== null) {
     orderForm.addEventListener('submit', function(event) {
         event.stopPropagation();
         event.preventDefault();
+        // Récupère dans des const les champs de formulaire et un éventuel message d'alerte, ainsi que le prix total du panier
         const alertExists = document.getElementById('alertMessage');
         const firstName = document.getElementById('firstName');
         const lastName = document.getElementById('lastName');
@@ -339,8 +325,11 @@ if (orderForm !== null) {
         const city = document.getElementById('city');
         const email = document.getElementById('email');
         const totalPrice = document.getElementById('totalPrice');
+        // Prépare l'URL de la page de confirmation avec les informations des champs de formulaire en paramètres
         const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value) + "&totalPrice=" + totalPrice.textContent;
         console.log(orderURL);
+        // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
+        // un message d'alerte n'existe pas encore, en crée un pour signaler à l'utilisateur qu'il ne peut pas commander un panier vide
         if (parseInt(totalPrice.textContent) > 0) {
             window.open(orderURL, "_self");
         } else if (alertExists === null) {
@@ -359,14 +348,19 @@ if (orderForm !== null) {
     })
 }
 
+// Lancée sur la page de confirmation de commande
+// Fonction asynchrone envoyant une requête POST contenant les informations de commande (contact et id des items) au serveur, puis
+// récupère la réponse de confirmation de commande et affiche le prix de la commande et l'id de commande, puis vide le panier
 async function postOrder() {
     try {
+        // Récupère les infos contact contenues dans les paramètres de l'URL
         let currentURL = new URL(window.location.href);
         let firstName = currentURL.searchParams.get('firstName');
         let lastName = currentURL.searchParams.get('lastName');
         let address = currentURL.searchParams.get('address');
         let city = currentURL.searchParams.get('city');
         let email = currentURL.searchParams.get('email');
+        // Crée un objet contact qui sera envoyé au serveur avec la requête
         let contact = {
             firstName: firstName,
             lastName: lastName,
@@ -374,35 +368,31 @@ async function postOrder() {
             city: city,
             email: email
         };
-        console.log(contact);
+        // Récupère l'id des types d'objets présents dans le panier et les stocke dans un tableau qui sera envoyé au serveur avec la requête
         let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
-
         let idList = [];
         for (i = 0; i < cartTempo.length; i++) {
             if (cartTempo[i].count > 0) {
                 idList.push(cartTempo[i].id);
             }
         };
-        console.log(idList);
-
+        // Crée l'objet qui sera envoyé au serveur avec la requête et qui contient l'objet contact + le tableau de liste d'id du panier
         let data = {
             contact: contact,
             products: idList
         };
-        console.log(data);
-
+        // Envoie la requête et attend la réponse
         const requestPromise = makeRequest('POST', api + '/order', data);
         const orderConfirmation = await requestPromise;
-        console.log(orderConfirmation);
-
+        // Récupère le prix du panier contenu dans les paramètres de l'URL
         let totalPrice = currentURL.searchParams.get('totalPrice');
-
+        // Utilise la réponse du serveur et le prix du panier pour annoncer à l'utilisateur que sa commande a été validée avec
+        // un id de confirmation de commande, et que sa commande lui a coûté tant
         const priceAnnounce = document.getElementById('priceAnnounce');
         const orderIdAnnounce = document.getElementById('orderIdAnnounce');
-
         priceAnnounce.textContent = "You have ordered for " + totalPrice + "€ in goods.";
         orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
-
+        // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
         localStorage.setItem('initialised', 'false');
         cartInitialisation();
     } catch (errorResponse) {
