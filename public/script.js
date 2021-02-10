@@ -47,7 +47,7 @@ function makeRequest(verb, url, data) {
 // Lorsqu'on veut la modifier, on utilise JSON.parse() pour transférer son contenu dans un array temporaire, on modifie cet array comme on le souhaite, 
 // puis on utilise JSON.stringify() pour transférer le contenu de l'array temporaire dans la variable locale 
 async function cartInitialisation() {
-    // Si l'array permanent a déjà été initialisé, cette fonction n'a pas d'effet
+    // Si l'array permanent cartPerma a déjà été initialisé, cette fonction n'a pas d'effet
     if (localStorage.getItem('initialised') === 'true') {
         console.log(localStorage.getItem('initialised'))
         console.log(localStorage.getItem('cartPerma'))
@@ -79,8 +79,7 @@ const totalPriceCalc = () => {
     for (i = 0; i < cartTempo.length; i++) {
         totalPrice += (cartTempo[i].price * cartTempo[i].count);
     }
-    totalPriceText.textContent = totalPrice;
-    console.log(totalPrice);
+    totalPriceText.textContent = totalPrice + "€";
 };
 
 // Fonction assurant que les input de l'utilisateur sont correctement convertis en une chaîne de caractères utilisable pour une URL
@@ -91,8 +90,8 @@ function fixedEncodeURIComponent (str) {
   }
 
 // Lancée sur la page index (vue de la liste des produits en vente)
-// Récupération de la liste des produits en vente, création d'une row sur la page pour chacun d'entre eux, et attribution d'un eventListener pour récupérer l'id 
-// du produit choisi se trouvant dans l'attribut id du texte du lien cliqué, et le stocker dans la variable de session currentProductId
+// Récupération de la liste des produits en vente, création d'une row contenant leurs infos sur la page pour chacun d'entre eux,
+// et insère en paramètre leur id dans l'URL renvoyant vers leur page produit
 async function getProductList() {
     try {
         // Récupère la liste des produits en vente par une requête serveur
@@ -119,8 +118,8 @@ async function getProductList() {
             newProduct.appendChild(productDescription);
 
             const productPrice = document.createElement("div");
-            productPrice.classList.add("col-1");
-            productPrice.textContent = productList[i].price;
+            productPrice.classList.add("col-2");
+            productPrice.textContent = productList[i].price + "€";
             newProduct.appendChild(productPrice);
 
             const productImage = document.createElement("div");
@@ -128,7 +127,7 @@ async function getProductList() {
             const imageContent = document.createElement("img");
             imageContent.setAttribute("src", productList[i].imageUrl);
             imageContent.setAttribute("alt", "Teddy Bear");
-            imageContent.classList.add("thumbnail");
+            imageContent.classList.add("thumbnail", "rounded", "mx-auto", "d-block");
             productImage.appendChild(imageContent);
             newProduct.appendChild(productImage);
 
@@ -157,7 +156,7 @@ async function getProductDetails() {
         imageHolder.setAttribute('src', productDetails.imageUrl);
         imageHolder.classList.add('productImage');
         nameHolder.textContent = productDetails.name;
-        priceHolder.textContent = productDetails.price;
+        priceHolder.textContent = productDetails.price + "€";
         descriptionHolder.textContent = productDetails.description;
 
         for (let i = 0; i < productDetails.colors.length; ++i) {
@@ -208,8 +207,6 @@ async function getCartDetails() {
         const productList = await requestPromise;
         // Récupère la variable de session cartPerma et transfère son contenu dans l'array temporaire cartTempo
         cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
-        console.log(cartTempo);
-        console.log(cartList);
         // Regarde le count de chacun des items à la vente et crée une row sur la page pour chaque count > 0
         // Remplit cette row avec le nom et le prix à l'unité de l'item concerné, ainsi que le nombre de ce type d'item présent dans le panier
         for (let i = 0; i < cartTempo.length; ++i) {
@@ -231,7 +228,7 @@ async function getCartDetails() {
                 // Crée la colonne prix du produit concerné
                 const productPrice = document.createElement("div");
                 productPrice.classList.add("col-3");
-                productPrice.textContent = productList[i].price;
+                productPrice.textContent = productList[i].price + "€";
                 newProduct.appendChild(productPrice);
 
                 // Crée la colonne nombre d'exemplaires produit concerné dans le panier
@@ -261,7 +258,6 @@ async function getCartDetails() {
                         if (idToTest === cartTempo[a].id) {
                             cartTempo[a].count = parseInt(productCountInput.value);
                             localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-                            console.log(cartTempo);
                             totalPriceCalc();
                         };
                     };
@@ -284,7 +280,6 @@ async function getCartDetails() {
                             cartTempo[a].count = 0;
                             // Retransfère l'array temporaire dans l'array permanent
                             localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
-                            console.log(cartTempo);
                         }
                     }
                     // Retire la row de la page
@@ -327,7 +322,6 @@ if (orderForm !== null) {
         const totalPrice = document.getElementById('totalPrice');
         // Prépare l'URL de la page de confirmation avec les informations des champs de formulaire en paramètres
         const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value) + "&totalPrice=" + totalPrice.textContent;
-        console.log(orderURL);
         // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
         // un message d'alerte n'existe pas encore, en crée un pour signaler à l'utilisateur qu'il ne peut pas commander un panier vide
         if (parseInt(totalPrice.textContent) > 0) {

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "load_server": "cd ../server_projet_5/JWDP5 && node server"
+    "load_server": "cd ../server_projet_5/JWDP5 && node server",
+    "sass": "sass --watch ./sass/main.scss:./public/css/style.css"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,6 @@
   "dependencies": {
     "bootstrap": "^4.6.0",
     "git": "^0.1.5",
-    "sass": "^1.32.5"
+    "sass": "^1.32.7"
   }
 }

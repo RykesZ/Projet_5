@@ -1,27 +1,73 @@
-div {
-    background-color:seashell;
+.thumbnail {
+  max-width: 300px;
 }
 
-.thumbnail {
-    max-width: 300px;
+div {
+  background-color: seashell;
 }
 
 .productImage {
-    width: 100%;
+  width: 100%;
 }
 
 input:invalid {
-    border: 2px solid red;
-  }
-  
-input:valid {
-    border: 1px solid black;
+  border: 2px solid red;
 }
 
-a {
-    margin-right: 50px;
+input:valid {
+  border: 1px solid black;
 }
 
 .orderForm {
-    margin-top: 50px;
+  margin-top: 50px;
 }
+
+#merchList .row {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #cfcfcf;
+}
+#merchList .col-2, #merchList .col-3 {
+  border-left: 2px solid #cfcfcf;
+}
+#merchList a {
+  color: black;
+  display: inline;
+  text-align: center;
+  vertical-align: middle;
+}
+#merchList a:link, #merchList a:visited, #merchList a:active {
+  text-decoration: none;
+}
+#merchList a:hover {
+  text-decoration: none;
+}
+
+@font-face {
+  font-family: "Pumpkin-Story";
+  src: url(../../public/fonts/Pumpkin-Story.ttf);
+}
+#merchList a {
+  font-family: "Pumpkin-Story", sans-serif;
+  font-size: 2em;
+}
+
+header nav {
+  height: 100px;
+}
+header nav a {
+  margin-right: 50px;
+  padding: 10px;
+  color: white;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+header nav a:hover {
+  border: 1px solid white;
+  color: white;
+  text-decoration: none;
+}
+header nav a:link, header nav a:visited, header nav a:active {
+  text-decoration: none;
+}
+
+/*# sourceMappingURL=style.css.map */
