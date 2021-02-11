@@ -3,9 +3,18 @@
     src: url(../../public/fonts/Pumpkin-Story.ttf);
 }
 
+@font-face {
+    font-family: 'Coolvetica';
+    src: url(../../public/fonts/coolvetica-rg.ttf);
+}
+
 #merchList {
     a {
         font-family: 'Pumpkin-Story', sans-serif;
         font-size: 2em;
     }
+}
+
+[class^=col] {
+    font-family: 'Coolvetica', sans-serif;
 }

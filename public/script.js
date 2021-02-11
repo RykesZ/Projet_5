@@ -123,7 +123,7 @@ async function getProductList() {
             newProduct.appendChild(productPrice);
 
             const productImage = document.createElement("div");
-            productImage.classList.add("col-3");
+            productImage.classList.add("col-4");
             const imageContent = document.createElement("img");
             imageContent.setAttribute("src", productList[i].imageUrl);
             imageContent.setAttribute("alt", "Teddy Bear");

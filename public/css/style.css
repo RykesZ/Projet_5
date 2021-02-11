@@ -23,18 +23,23 @@ input:valid {
 }
 
 #merchList .row {
+  border-bottom: 2px solid #cfcfcf;
+  border-right: 2px solid #cfcfcf;
+  border-left: 2px solid #cfcfcf;
+}
+#merchList .row > * {
   padding-top: 10px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #cfcfcf;
 }
-#merchList .col-2, #merchList .col-3 {
+#merchList [class^=col] ~ [class^=col] {
   border-left: 2px solid #cfcfcf;
+}
+#merchList [class^=col] {
+  text-align: center;
 }
 #merchList a {
   color: black;
-  display: inline;
   text-align: center;
-  vertical-align: middle;
 }
 #merchList a:link, #merchList a:visited, #merchList a:active {
   text-decoration: none;
@@ -47,9 +52,17 @@ input:valid {
   font-family: "Pumpkin-Story";
   src: url(../../public/fonts/Pumpkin-Story.ttf);
 }
+@font-face {
+  font-family: "Coolvetica";
+  src: url(../../public/fonts/coolvetica-rg.ttf);
+}
 #merchList a {
   font-family: "Pumpkin-Story", sans-serif;
   font-size: 2em;
+}
+
+* {
+  font-family: "Coolvetica", sans-serif;
 }
 
 header nav {

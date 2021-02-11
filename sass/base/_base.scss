@@ -24,12 +24,19 @@ input:valid {
 
 #merchList {
     .row {
-        padding-top: 10px;
-        padding-bottom: 10px;
         border-bottom: 2px solid rgb(207, 207, 207);
-    }
-    .col-2, .col-3 {
+        border-right: 2px solid rgb(207, 207, 207);
         border-left: 2px solid rgb(207, 207, 207);
+        &>* {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    }
+    [class^=col] ~ [class^=col] {
+        border-left: 2px solid rgb(207, 207, 207);
+    }
+    [class^=col] {
+        text-align: center;
     }
     a {
         color: black;
