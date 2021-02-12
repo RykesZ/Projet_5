@@ -68,7 +68,16 @@
   }
 
   #cart [class^=col] .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+  }
+  #cart [class^=col] .row [class^=col] {
+    border-left: 2px solid #cfcfcf;
+    padding-bottom: 10px;
     padding-top: 10px;
+  }
+  #cart [class^=col] h2 + .row {
+    border-top: 2px solid #cfcfcf;
   }
   #cart a {
     color: black;
@@ -93,6 +102,10 @@
   }
   #cart p, #cart form, #cart h2, #cart h3 {
     text-align: center;
+  }
+
+  #formSpace {
+    border: 2px solid #cfcfcf;
   }
 }
 @media screen and (min-width: 481px) {
@@ -286,6 +299,7 @@ input:valid {
 
 #cart {
   margin-bottom: 50px;
+  padding-bottom: 10px;
 }
 
 @font-face {
@@ -345,6 +359,12 @@ input:valid {
   #cart p {
     font-size: 1em;
   }
+  #cart form {
+    font-size: 1em;
+  }
+  #cart button {
+    font-size: 1em;
+  }
 }
 @media screen and (min-width: 481px) {
   header nav h1 {
@@ -384,16 +404,22 @@ input:valid {
     font-size: 1.5em;
   }
   #cart h1 {
-    font-size: 2em;
+    font-size: 2.5em;
   }
   #cart h2 {
-    font-size: 1.5em;
+    font-size: 2em;
   }
   #cart h3 {
-    font-size: 1.25em;
+    font-size: 1.5em;
   }
   #cart p {
-    font-size: 1em;
+    font-size: 1.5em;
+  }
+  #cart form {
+    font-size: 1.25em;
+  }
+  #cart button {
+    font-size: 1.25em;
   }
 }
 @media screen and (min-width: 768px) {
@@ -415,6 +441,29 @@ input:valid {
   }
   #merchList .col-md-2 p {
     font-size: 2em;
+  }
+
+  #cart a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 2em;
+  }
+  #cart h1 {
+    font-size: 2.5em;
+  }
+  #cart h2 {
+    font-size: 2.5em;
+  }
+  #cart h3 {
+    font-size: 2em;
+  }
+  #cart p {
+    font-size: 1.5em;
+  }
+  #cart form {
+    font-size: 1.5em;
+  }
+  #cart button {
+    font-size: 1.5em;
   }
 }
 [class^=col] {
