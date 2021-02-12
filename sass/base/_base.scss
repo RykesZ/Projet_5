@@ -1,13 +1,304 @@
-.thumbnail {
-    max-width: 300px;
+@media screen and (max-width: 480px) {
+    .thumbnail {
+        max-width: 100px;
+    }
+    #merchList {
+        .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+            &>* {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            [class^=col] {
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+        [class^=col] ~ [class^=col] {
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        [class^=col] {
+            text-align: center;
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+                &::after {
+                    width: 100%;
+                }
+            }
+            &::after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 2px;
+                background: #000;
+                transition: width .3s;
+            }
+        }
+    }
+    #productPresentation, #numberChoice {
+        &, .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        .productImage {
+            max-width: 100%;
+            height: auto;
+        }
+        #name {
+            color: black;
+            text-align: center;
+        }
+        .row {
+            border-right: none;
+            border-left: none;
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        #addCartForm {
+            padding: 10px;
+        }
+    }
+    #cart {
+        [class^=col] {
+            .row {
+                padding-top: 10px;
+            }
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+                &::after {
+                    width: 100%;
+                }
+            }
+            &::after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 2px;
+                background: #000;
+                transition: width .3s;
+            }
+        }
+        p, form, h2, h3 {
+            text-align: center;
+        }
+    }
+}
+
+@media screen and (min-width: 481px) {
+    .thumbnail {
+        max-width: 200px;
+    }
+    #merchList {
+        .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+            &>* {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            [class^=col] {
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+        [class^=col] ~ [class^=col] {
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        [class^=col] {
+            text-align: center;
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+                &::after {
+                    width: 100%;
+                }
+            }
+            &::after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 2px;
+                background: #000;
+                transition: width .3s;
+            }
+        }
+    }
+    #productPresentation, #numberChoice {
+        &, .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        .productImage {
+            max-width: 100%;
+            height: auto;
+        }
+        #name {
+            color: black;
+            text-align: center;
+        }
+        .row {
+            border-right: none;
+            border-left: none;
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        #addCartForm {
+            padding: 10px;
+        }
+    }
+    #cart {
+        [class^=col] {
+            .row {
+                padding-top: 10px;
+            }
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+                &::after {
+                    width: 100%;
+                }
+            }
+            &::after {
+                content: '';
+                display: block;
+                width: 0;
+                height: 2px;
+                background: #000;
+                transition: width .3s;
+            }
+        }
+        p, form, h2, h3, #empty, #remove {
+            text-align: center;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .thumbnail {
+        max-width: 200px;
+    }
+    #merchList {
+        .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+            &>* {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            [class^=col] {
+                &:nth-child(2) {
+                    display: block;
+                }
+            }
+        }
+        [class^=col] ~ [class^=col] {
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        [class^=col] {
+            text-align: center;
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+    #productPresentation {
+        [class^=col] {
+            border-left: 2px solid rgb(207, 207, 207);
+            [class^=col] {
+                border: none;
+            }
+        }
+    }
+    #cart {
+        [id^=articleNumber] {
+            margin-left: 10px;
+        }
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .thumbnail {
+        max-width: 250px;
+    }
+    #merchList {
+        .row {
+            border-bottom: 2px solid rgb(207, 207, 207);
+            border-right: 2px solid rgb(207, 207, 207);
+            border-left: 2px solid rgb(207, 207, 207);
+            &>* {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+        [class^=col] ~ [class^=col] {
+            border-left: 2px solid rgb(207, 207, 207);
+        }
+        [class^=col] {
+            text-align: center;
+        }
+        a {
+            color: black;
+            text-align: center;
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+    #cart {
+        [id^=articleNumber] {
+            margin-left: 10px;
+        }
+    }
 }
 
 div {
     background-color:seashell;
-}
-
-.productImage {
-    width: 100%;
 }
 
 input:invalid {
@@ -18,34 +309,6 @@ input:valid {
     border: 1px solid black;
 }
 
-.orderForm {
-    margin-top: 50px;
-}
-
-#merchList {
-    .row {
-        border-bottom: 2px solid rgb(207, 207, 207);
-        border-right: 2px solid rgb(207, 207, 207);
-        border-left: 2px solid rgb(207, 207, 207);
-        &>* {
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-    }
-    [class^=col] ~ [class^=col] {
-        border-left: 2px solid rgb(207, 207, 207);
-    }
-    [class^=col] {
-        text-align: center;
-    }
-    a {
-        color: black;
-        text-align: center;
-        &:link, &:visited, &:active {
-            text-decoration: none;
-        }
-        &:hover {
-            text-decoration: none;
-        }
-    }
+#cart {
+    margin-bottom: 50px;
 }

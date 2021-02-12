@@ -8,10 +8,159 @@
     src: url(../../public/fonts/coolvetica-rg.ttf);
 }
 
-#merchList {
-    a {
-        font-family: 'Pumpkin-Story', sans-serif;
-        font-size: 2em;
+
+@media screen and (max-width: 480px) {
+    header {
+        nav {
+            h1 {
+                font-size: 2.5em;
+            }
+            h2 {
+                font-size: 2em;
+            }
+        }
+    }
+    #merchList {
+        a {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 1em;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        
+        h2 {
+            font-size: 1.25em;
+        }
+        
+        h3 {
+            font-size: 1.5em;
+        }
+        
+        p {
+            font-size: 1em;
+        }
+    }
+    #productPresentation {
+        #name {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 2.5em;
+        }
+        #price, #colorChoice, #description, #addCartForm {
+            font-size: 1.5em;
+        }
+    }
+    #cart {
+        a {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 1.5em;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        
+        h2 {
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            font-size: 1.25em;
+        }
+        
+        p {
+            font-size: 1em;
+        }
+    }
+}
+
+@media screen and (min-width: 481px) {
+    header {
+        nav {
+            h1 {
+                font-size: 2.5em;
+            }
+            h2 {
+                font-size: 2em;
+            }
+        }
+    }
+    #merchList {
+        a {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 1em;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        
+        h2 {
+            font-size: 1.25em;
+        }
+        
+        h3 {
+            font-size: 1.5em;
+        }
+        
+        p {
+            font-size: 1em;
+        }
+    }
+    #productPresentation {
+        #name {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 2.5em;
+        }
+        #price, #colorChoice, #description, #addCartForm {
+            font-size: 1.5em;
+        }
+    }
+    #cart {
+        a {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 1.5em;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        
+        h2 {
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            font-size: 1.25em;
+        }
+        
+        p {
+            font-size: 1em;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #merchList {
+        a {
+            font-family: 'Pumpkin-Story', sans-serif;
+            font-size: 1.5em;
+        }
+        h1 {
+            font-size: 3em;
+        }
+        
+        h2 {
+            font-size: 2em;
+        }
+        
+        h3 {
+            font-size: 2em;
+        }
+        
+        p {
+            font-size: 1.25em;
+        }
+        .col-md-2 p {
+            font-size: 2em;
+        }
     }
 }
 

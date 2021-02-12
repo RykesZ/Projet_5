@@ -2,7 +2,7 @@
 const result = document.getElementById('result');
 const merchList = document.getElementById('merchList');
 const cartList = document.getElementById('cartList');
-const productPresentation = document.getElementById('productPresentation');
+//const productPresentation = document.getElementById('productPresentation');
 const addCartForm = document.getElementById('addCartForm');
 const orderForm = document.getElementById('orderForm');
 const productPrices = [];
@@ -104,7 +104,7 @@ async function getProductList() {
 
             const productName = document.createElement("div");
             const linkName = document.createElement("a");
-            const linkNameTextContent = document.createElement("p");
+            const linkNameTextContent = document.createElement("h3");
             productName.classList.add("col-3");
             linkNameTextContent.textContent = productList[i].name;
             linkName.setAttribute("href", "./public/pages/produit.html" + "?id=" + productList[i]._id);
@@ -114,16 +114,20 @@ async function getProductList() {
 
             const productDescription = document.createElement("div");
             productDescription.classList.add("col-3");
-            productDescription.textContent = productList[i].description;
+            const productDescriptionText = document.createElement("p");
+            productDescriptionText.textContent = productList[i].description;
+            productDescription.appendChild(productDescriptionText);
             newProduct.appendChild(productDescription);
 
             const productPrice = document.createElement("div");
-            productPrice.classList.add("col-2");
-            productPrice.textContent = productList[i].price + "€";
+            productPrice.classList.add("col-3", "col-md-2");
+            const productPriceText = document.createElement("p");
+            productPriceText.textContent = productList[i].price + "€";
+            productPrice.appendChild(productPriceText);
             newProduct.appendChild(productPrice);
 
             const productImage = document.createElement("div");
-            productImage.classList.add("col-4");
+            productImage.classList.add("col-6", "col-md-4");
             const imageContent = document.createElement("img");
             imageContent.setAttribute("src", productList[i].imageUrl);
             imageContent.setAttribute("alt", "Teddy Bear");
@@ -156,7 +160,7 @@ async function getProductDetails() {
         imageHolder.setAttribute('src', productDetails.imageUrl);
         imageHolder.classList.add('productImage');
         nameHolder.textContent = productDetails.name;
-        priceHolder.textContent = productDetails.price + "€";
+        priceHolder.textContent = "Price : " + productDetails.price + "€";
         descriptionHolder.textContent = productDetails.description;
 
         for (let i = 0; i < productDetails.colors.length; ++i) {
@@ -228,7 +232,9 @@ async function getCartDetails() {
                 // Crée la colonne prix du produit concerné
                 const productPrice = document.createElement("div");
                 productPrice.classList.add("col-3");
-                productPrice.textContent = productList[i].price + "€";
+                const productPriceText = document.createElement("p");
+                productPriceText.textContent = productList[i].price + "€";
+                productPrice.appendChild(productPriceText);
                 newProduct.appendChild(productPrice);
 
                 // Crée la colonne nombre d'exemplaires produit concerné dans le panier
@@ -266,6 +272,7 @@ async function getCartDetails() {
                 // Crée le bouton de suppression du type d'article du panier
                 const removeArticle = document.createElement("div");
                 removeArticle.classList.add("col-3");
+                removeArticle.setAttribute("id", "remove");
                 const removeButton = document.createElement("button");
                 removeArticle.appendChild(removeButton);
                 removeButton.setAttribute("type", "button");

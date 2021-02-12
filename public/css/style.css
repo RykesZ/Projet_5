@@ -1,13 +1,279 @@
-.thumbnail {
-  max-width: 300px;
-}
+@media screen and (max-width: 480px) {
+  .thumbnail {
+    max-width: 100px;
+  }
 
+  #merchList .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList .row > * {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  #merchList .row [class^=col]:nth-child(2) {
+    display: none;
+  }
+  #merchList [class^=col] ~ [class^=col] {
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList [class^=col] {
+    text-align: center;
+  }
+  #merchList a {
+    color: black;
+    text-align: center;
+  }
+  #merchList a:link, #merchList a:visited, #merchList a:active {
+    text-decoration: none;
+  }
+  #merchList a:hover {
+    text-decoration: none;
+  }
+  #merchList a:hover::after {
+    width: 100%;
+  }
+  #merchList a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s;
+  }
+
+  #productPresentation, #productPresentation .row, #numberChoice, #numberChoice .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #productPresentation .productImage, #numberChoice .productImage {
+    max-width: 100%;
+    height: auto;
+  }
+  #productPresentation #name, #numberChoice #name {
+    color: black;
+    text-align: center;
+  }
+  #productPresentation .row, #numberChoice .row {
+    border-right: none;
+    border-left: none;
+  }
+  #productPresentation .row:last-child, #numberChoice .row:last-child {
+    border-bottom: none;
+  }
+  #productPresentation #addCartForm, #numberChoice #addCartForm {
+    padding: 10px;
+  }
+
+  #cart [class^=col] .row {
+    padding-top: 10px;
+  }
+  #cart a {
+    color: black;
+    text-align: center;
+  }
+  #cart a:link, #cart a:visited, #cart a:active {
+    text-decoration: none;
+  }
+  #cart a:hover {
+    text-decoration: none;
+  }
+  #cart a:hover::after {
+    width: 100%;
+  }
+  #cart a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s;
+  }
+  #cart p, #cart form, #cart h2, #cart h3 {
+    text-align: center;
+  }
+}
+@media screen and (min-width: 481px) {
+  .thumbnail {
+    max-width: 200px;
+  }
+
+  #merchList .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList .row > * {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  #merchList .row [class^=col]:nth-child(2) {
+    display: none;
+  }
+  #merchList [class^=col] ~ [class^=col] {
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList [class^=col] {
+    text-align: center;
+  }
+  #merchList a {
+    color: black;
+    text-align: center;
+  }
+  #merchList a:link, #merchList a:visited, #merchList a:active {
+    text-decoration: none;
+  }
+  #merchList a:hover {
+    text-decoration: none;
+  }
+  #merchList a:hover::after {
+    width: 100%;
+  }
+  #merchList a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s;
+  }
+
+  #productPresentation, #productPresentation .row, #numberChoice, #numberChoice .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #productPresentation .productImage, #numberChoice .productImage {
+    max-width: 100%;
+    height: auto;
+  }
+  #productPresentation #name, #numberChoice #name {
+    color: black;
+    text-align: center;
+  }
+  #productPresentation .row, #numberChoice .row {
+    border-right: none;
+    border-left: none;
+  }
+  #productPresentation .row:last-child, #numberChoice .row:last-child {
+    border-bottom: none;
+  }
+  #productPresentation #addCartForm, #numberChoice #addCartForm {
+    padding: 10px;
+  }
+
+  #cart [class^=col] .row {
+    padding-top: 10px;
+  }
+  #cart a {
+    color: black;
+    text-align: center;
+  }
+  #cart a:link, #cart a:visited, #cart a:active {
+    text-decoration: none;
+  }
+  #cart a:hover {
+    text-decoration: none;
+  }
+  #cart a:hover::after {
+    width: 100%;
+  }
+  #cart a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s;
+  }
+  #cart p, #cart form, #cart h2, #cart h3, #cart #empty, #cart #remove {
+    text-align: center;
+  }
+}
+@media screen and (min-width: 768px) {
+  .thumbnail {
+    max-width: 200px;
+  }
+
+  #merchList .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList .row > * {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  #merchList .row [class^=col]:nth-child(2) {
+    display: block;
+  }
+  #merchList [class^=col] ~ [class^=col] {
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList [class^=col] {
+    text-align: center;
+  }
+  #merchList a {
+    color: black;
+    text-align: center;
+  }
+  #merchList a:link, #merchList a:visited, #merchList a:active {
+    text-decoration: none;
+  }
+  #merchList a:hover {
+    text-decoration: none;
+  }
+
+  #productPresentation [class^=col] {
+    border-left: 2px solid #cfcfcf;
+  }
+  #productPresentation [class^=col] [class^=col] {
+    border: none;
+  }
+
+  #cart [id^=articleNumber] {
+    margin-left: 10px;
+  }
+}
+@media screen and (min-width: 992px) {
+  .thumbnail {
+    max-width: 250px;
+  }
+
+  #merchList .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList .row > * {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  #merchList [class^=col] ~ [class^=col] {
+    border-left: 2px solid #cfcfcf;
+  }
+  #merchList [class^=col] {
+    text-align: center;
+  }
+  #merchList a {
+    color: black;
+    text-align: center;
+  }
+  #merchList a:link, #merchList a:visited, #merchList a:active {
+    text-decoration: none;
+  }
+  #merchList a:hover {
+    text-decoration: none;
+  }
+
+  #cart [id^=articleNumber] {
+    margin-left: 10px;
+  }
+}
 div {
   background-color: seashell;
-}
-
-.productImage {
-  width: 100%;
 }
 
 input:invalid {
@@ -18,34 +284,8 @@ input:valid {
   border: 1px solid black;
 }
 
-.orderForm {
-  margin-top: 50px;
-}
-
-#merchList .row {
-  border-bottom: 2px solid #cfcfcf;
-  border-right: 2px solid #cfcfcf;
-  border-left: 2px solid #cfcfcf;
-}
-#merchList .row > * {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-#merchList [class^=col] ~ [class^=col] {
-  border-left: 2px solid #cfcfcf;
-}
-#merchList [class^=col] {
-  text-align: center;
-}
-#merchList a {
-  color: black;
-  text-align: center;
-}
-#merchList a:link, #merchList a:visited, #merchList a:active {
-  text-decoration: none;
-}
-#merchList a:hover {
-  text-decoration: none;
+#cart {
+  margin-bottom: 50px;
 }
 
 @font-face {
@@ -56,31 +296,194 @@ input:valid {
   font-family: "Coolvetica";
   src: url(../../public/fonts/coolvetica-rg.ttf);
 }
-#merchList a {
-  font-family: "Pumpkin-Story", sans-serif;
-  font-size: 2em;
-}
+@media screen and (max-width: 480px) {
+  header nav h1 {
+    font-size: 2.5em;
+  }
+  header nav h2 {
+    font-size: 2em;
+  }
 
-* {
+  #merchList a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 1em;
+  }
+  #merchList h1 {
+    font-size: 2em;
+  }
+  #merchList h2 {
+    font-size: 1.25em;
+  }
+  #merchList h3 {
+    font-size: 1.5em;
+  }
+  #merchList p {
+    font-size: 1em;
+  }
+
+  #productPresentation #name {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 2.5em;
+  }
+  #productPresentation #price, #productPresentation #colorChoice, #productPresentation #description, #productPresentation #addCartForm {
+    font-size: 1.5em;
+  }
+
+  #cart a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 1.5em;
+  }
+  #cart h1 {
+    font-size: 2em;
+  }
+  #cart h2 {
+    font-size: 1.5em;
+  }
+  #cart h3 {
+    font-size: 1.25em;
+  }
+  #cart p {
+    font-size: 1em;
+  }
+}
+@media screen and (min-width: 481px) {
+  header nav h1 {
+    font-size: 2.5em;
+  }
+  header nav h2 {
+    font-size: 2em;
+  }
+
+  #merchList a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 1em;
+  }
+  #merchList h1 {
+    font-size: 2em;
+  }
+  #merchList h2 {
+    font-size: 1.25em;
+  }
+  #merchList h3 {
+    font-size: 1.5em;
+  }
+  #merchList p {
+    font-size: 1em;
+  }
+
+  #productPresentation #name {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 2.5em;
+  }
+  #productPresentation #price, #productPresentation #colorChoice, #productPresentation #description, #productPresentation #addCartForm {
+    font-size: 1.5em;
+  }
+
+  #cart a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 1.5em;
+  }
+  #cart h1 {
+    font-size: 2em;
+  }
+  #cart h2 {
+    font-size: 1.5em;
+  }
+  #cart h3 {
+    font-size: 1.25em;
+  }
+  #cart p {
+    font-size: 1em;
+  }
+}
+@media screen and (min-width: 768px) {
+  #merchList a {
+    font-family: "Pumpkin-Story", sans-serif;
+    font-size: 1.5em;
+  }
+  #merchList h1 {
+    font-size: 3em;
+  }
+  #merchList h2 {
+    font-size: 2em;
+  }
+  #merchList h3 {
+    font-size: 2em;
+  }
+  #merchList p {
+    font-size: 1.25em;
+  }
+  #merchList .col-md-2 p {
+    font-size: 2em;
+  }
+}
+[class^=col] {
   font-family: "Coolvetica", sans-serif;
 }
 
-header nav {
-  height: 100px;
+@media screen and (max-width: 480px) {
+  header nav {
+    height: 100px;
+  }
+  header nav a {
+    margin-right: 10px;
+    padding: 10px;
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0);
+  }
+  header nav a:hover {
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+  }
+  header nav a:link, header nav a:visited, header nav a:active {
+    text-decoration: none;
+  }
 }
-header nav a {
-  margin-right: 50px;
-  padding: 10px;
-  color: white;
-  border: 1px solid rgba(0, 0, 0, 0);
+@media screen and (min-width: 481px) {
+  header nav {
+    height: 100px;
+  }
+  header nav a {
+    margin-right: 10px;
+    padding: 10px;
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0);
+  }
+  header nav a:hover {
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+  }
+  header nav a:link, header nav a:visited, header nav a:active {
+    text-decoration: none;
+  }
 }
-header nav a:hover {
-  border: 1px solid white;
-  color: white;
-  text-decoration: none;
+@media screen and (min-width: 768px) {
+  header nav a {
+    margin-right: 50px;
+  }
 }
-header nav a:link, header nav a:visited, header nav a:active {
-  text-decoration: none;
-}
+/*header {
+    nav {
+        height: 100px;
+        a {
+            margin-right: 50px;
+            padding: 10px;
+            color: white;
+            border: 1px solid rgba(0, 0, 0, 0);
+
+            &:hover {
+                border: 1px solid white;
+                color: white;
+                text-decoration: none;
+            }
+
+            &:link, &:visited, &:active {
+                text-decoration: none;
+            }
+        }
+    }
+}*/
 
 /*# sourceMappingURL=style.css.map */
