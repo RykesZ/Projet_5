@@ -391,7 +391,7 @@ async function postOrder() {
         // un id de confirmation de commande, et que sa commande lui a coûté tant
         const priceAnnounce = document.getElementById('priceAnnounce');
         const orderIdAnnounce = document.getElementById('orderIdAnnounce');
-        priceAnnounce.textContent = "You have ordered for " + totalPrice + "€ in goods.";
+        priceAnnounce.textContent = "You have ordered for " + totalPrice + "in goods.";
         orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
         // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
         localStorage.setItem('initialised', 'false');

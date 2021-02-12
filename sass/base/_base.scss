@@ -190,7 +190,16 @@
     #cart {
         [class^=col] {
             .row {
-                padding-top: 10px;
+                border-bottom: 2px solid rgb(207, 207, 207);
+                border-right: 2px solid rgb(207, 207, 207);
+                [class^=col] {
+                    border-left: 2px solid rgb(207, 207, 207);
+                    padding-bottom: 10px;
+                    padding-top: 10px;
+                }
+            }
+            h2 + .row {
+                border-top: 2px solid rgb(207, 207, 207);
             }
         }
         a {
@@ -217,6 +226,9 @@
         p, form, h2, h3, #empty, #remove {
             text-align: center;
         }
+    }
+    #formSpace {
+        border: 2px solid rgb(207, 207, 207);
     }
 }
 

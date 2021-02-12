@@ -178,7 +178,16 @@
   }
 
   #cart [class^=col] .row {
+    border-bottom: 2px solid #cfcfcf;
+    border-right: 2px solid #cfcfcf;
+  }
+  #cart [class^=col] .row [class^=col] {
+    border-left: 2px solid #cfcfcf;
+    padding-bottom: 10px;
     padding-top: 10px;
+  }
+  #cart [class^=col] h2 + .row {
+    border-top: 2px solid #cfcfcf;
   }
   #cart a {
     color: black;
@@ -203,6 +212,10 @@
   }
   #cart p, #cart form, #cart h2, #cart h3, #cart #empty, #cart #remove {
     text-align: center;
+  }
+
+  #formSpace {
+    border: 2px solid #cfcfcf;
   }
 }
 @media screen and (min-width: 768px) {
