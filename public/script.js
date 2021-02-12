@@ -79,7 +79,7 @@ const totalPriceCalc = () => {
     for (i = 0; i < cartTempo.length; i++) {
         totalPrice += (cartTempo[i].price * cartTempo[i].count);
     }
-    totalPriceText.textContent = totalPrice + "€";
+    return totalPrice;
 };
 
 // Fonction assurant que les input de l'utilisateur sont correctement convertis en une chaîne de caractères utilisable pour une URL
@@ -265,6 +265,7 @@ async function getCartDetails() {
                             cartTempo[a].count = parseInt(productCountInput.value);
                             localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
                             totalPriceCalc();
+                            totalPriceText.textContent = totalPrice + "€";
                         };
                     };
                 });
@@ -292,6 +293,7 @@ async function getCartDetails() {
                     // Retire la row de la page
                     cartList.removeChild(newProduct);
                     totalPriceCalc();
+                    totalPriceText.textContent = totalPrice + "€";
                 });
                 newProduct.appendChild(removeArticle);
                 // Ajoute la row à la page
@@ -300,6 +302,7 @@ async function getCartDetails() {
         }
         // Affiche le prix final sur la page
         totalPriceCalc();
+        totalPriceText.textContent = totalPrice + "€";
         // Ajoute un écouteur d'événement sur le bouton qui vide le panier et recharge la page
         const emptyButton = document.getElementById("emptyButton");
         emptyButton.addEventListener("click", function(event) {
@@ -331,7 +334,7 @@ if (orderForm !== null) {
         const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value) + "&totalPrice=" + totalPrice.textContent;
         // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
         // un message d'alerte n'existe pas encore, en crée un pour signaler à l'utilisateur qu'il ne peut pas commander un panier vide
-        if (parseInt(totalPrice.textContent) > 0) {
+        if (totalPriceCalc() > 0) {
             window.open(orderURL, "_self");
         } else if (alertExists === null) {
             const container = document.getElementById('container');
@@ -354,48 +357,54 @@ if (orderForm !== null) {
 // récupère la réponse de confirmation de commande et affiche le prix de la commande et l'id de commande, puis vide le panier
 async function postOrder() {
     try {
-        // Récupère les infos contact contenues dans les paramètres de l'URL
-        let currentURL = new URL(window.location.href);
-        let firstName = currentURL.searchParams.get('firstName');
-        let lastName = currentURL.searchParams.get('lastName');
-        let address = currentURL.searchParams.get('address');
-        let city = currentURL.searchParams.get('city');
-        let email = currentURL.searchParams.get('email');
-        // Crée un objet contact qui sera envoyé au serveur avec la requête
-        let contact = {
-            firstName: firstName,
-            lastName: lastName,
-            address: address,
-            city: city,
-            email: email
-        };
-        // Récupère l'id des types d'objets présents dans le panier et les stocke dans un tableau qui sera envoyé au serveur avec la requête
-        let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
-        let idList = [];
-        for (i = 0; i < cartTempo.length; i++) {
-            if (cartTempo[i].count > 0) {
-                idList.push(cartTempo[i].id);
-            }
-        };
-        // Crée l'objet qui sera envoyé au serveur avec la requête et qui contient l'objet contact + le tableau de liste d'id du panier
-        let data = {
-            contact: contact,
-            products: idList
-        };
-        // Envoie la requête et attend la réponse
-        const requestPromise = makeRequest('POST', api + '/order', data);
-        const orderConfirmation = await requestPromise;
-        // Récupère le prix du panier contenu dans les paramètres de l'URL
-        let totalPrice = currentURL.searchParams.get('totalPrice');
-        // Utilise la réponse du serveur et le prix du panier pour annoncer à l'utilisateur que sa commande a été validée avec
-        // un id de confirmation de commande, et que sa commande lui a coûté tant
-        const priceAnnounce = document.getElementById('priceAnnounce');
-        const orderIdAnnounce = document.getElementById('orderIdAnnounce');
-        priceAnnounce.textContent = "You have ordered for " + totalPrice + "in goods.";
-        orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
-        // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
-        localStorage.setItem('initialised', 'false');
-        cartInitialisation();
+        // Récupère le prix du panier
+        let totalPrice = totalPriceCalc();
+        // Teste si le prix du panier est > 0 (=/= un rechargement de la page de confirmation), si oui, le code s'exécute
+        // normalement, sinon il redirige vers la page d'accueil
+        if (totalPrice > 0) {
+            // Récupère les infos contact contenues dans les paramètres de l'URL
+            let currentURL = new URL(window.location.href);
+            let firstName = currentURL.searchParams.get('firstName');
+            let lastName = currentURL.searchParams.get('lastName');
+            let address = currentURL.searchParams.get('address');
+            let city = currentURL.searchParams.get('city');
+            let email = currentURL.searchParams.get('email');
+            // Crée un objet contact qui sera envoyé au serveur avec la requête
+            let contact = {
+                firstName: firstName,
+                lastName: lastName,
+                address: address,
+                city: city,
+                email: email
+            };
+            // Récupère l'id des types d'objets présents dans le panier et les stocke dans un tableau qui sera envoyé au serveur avec la requête
+            let cartTempo = JSON.parse(localStorage.getItem('cartPerma'));
+            let idList = [];
+            for (i = 0; i < cartTempo.length; i++) {
+                if (cartTempo[i].count > 0) {
+                    idList.push(cartTempo[i].id);
+                }
+            };
+            // Crée l'objet qui sera envoyé au serveur avec la requête et qui contient l'objet contact + le tableau de liste d'id du panier
+            let data = {
+                contact: contact,
+                products: idList
+            };
+            // Envoie la requête et attend la réponse
+            const requestPromise = makeRequest('POST', api + '/order', data);
+            const orderConfirmation = await requestPromise;
+            // Utilise la réponse du serveur et le prix du panier pour annoncer à l'utilisateur que sa commande a été validée avec
+            // un id de confirmation de commande, et que sa commande lui a coûté tant
+            const priceAnnounce = document.getElementById('priceAnnounce');
+            const orderIdAnnounce = document.getElementById('orderIdAnnounce');
+            priceAnnounce.textContent = "You have ordered for " + totalPrice + "€ in goods.";
+            orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
+            // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
+            localStorage.setItem('initialised', 'false');
+            cartInitialisation();
+        } else {
+            window.location.replace("../../index.html");
+        }
     } catch (errorResponse) {
     };
 };
