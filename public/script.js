@@ -396,8 +396,6 @@ async function getCartDetails() {
     };
 };
 
-
-
 // Lancée sur la page de confirmation de commande
 // Fonction asynchrone demandant l'envoi d'une requête POST contenant les informations de commande (contact et id des items) au serveur, puis
 // récupère la réponse de confirmation de commande et affiche le prix de la commande et l'id de commande, puis demande la réinitialisation du panier
