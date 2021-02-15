@@ -391,8 +391,8 @@ if (orderForm !== null) {
 }
 
 // Lancée sur la page de confirmation de commande
-// Fonction asynchrone envoyant une requête POST contenant les informations de commande (contact et id des items) au serveur, puis
-// récupère la réponse de confirmation de commande et affiche le prix de la commande et l'id de commande, puis vide le panier
+// Fonction asynchrone demandant l'envoi d'une requête POST contenant les informations de commande (contact et id des items) au serveur, puis
+// récupère la réponse de confirmation de commande et affiche le prix de la commande et l'id de commande, puis demande la réinitialisation du panier
 async function postOrder() {
     try {
         // Récupère le prix du panier
@@ -442,7 +442,7 @@ async function postOrder() {
         } else {
             window.location.replace("../../index.html");
         }
-    } catch (errorResponse) {
+    } catch (error) {
         const priceAnnounce = document.getElementById('priceAnnounce');
         priceAnnounce.textContent = "Something went wrong with your order, please try again later."
     };
