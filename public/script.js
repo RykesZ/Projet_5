@@ -18,7 +18,7 @@ class onSaleProduct {
 
 const api = 'http://localhost:3000/api/teddies';
 
-// Fonction génériques :
+// Fonctions génériques :
 
 // Création de la fonction générique de requête AJAX
 function makeRequest(verb, url, data) {
@@ -41,7 +41,7 @@ function makeRequest(verb, url, data) {
             request.send();
         }
     });
-}
+};
 
 // Fonction qui permet de récupérer la variable locale cartPerma et de renvoyer son résultat parsé
 const getCartPerma = () => {
@@ -99,10 +99,7 @@ async function cartInitialisation() {
         console.log(localStorage.getItem('cartPerma'));
         localStorage.setItem('initialised', 'true');
     }
-}
-// Lance la fonction d'initialisation du panier si possible, quelle que soit la page, pour permettre à un nouvel utilisateur arrivant sur l'une
-// d'elles d'avoir un panier fonctionnel
-cartInitialisation();
+};
 
 // Fonction de calcul du prix total du panier : récupère index par index le prix de l'item et son nombre dans le panier,
 // multiplie les deux et ajoute le résultat au prix total
@@ -120,10 +117,78 @@ const fixedEncodeURIComponent = (str) => {
     return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
       return '%' + c.charCodeAt(0).toString(16);
     });
-  }
+  };
 
+// Fonction qui ajoute un eventListener submit sur le formulaire d'ajout du nombre d'articles voulus au panier s'il existe sur la page
+const checkDoesArticleFormExist = () => {
+    if (addCartForm !== null) {
+        addCartForm.addEventListener('submit', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            // Récupération du nombre d'articles à ajouter au panier
+            const articleNumber = document.getElementById('articleNumber');
+            // Récupération de l'array du panier permanent
+            let cartTempo = getCartPerma();
+            console.log(cartTempo);
+            // Récupération de l'id du produit actuel en variable à tester
+            let currentURL = new URL(window.location.href);
+            let idToTest = currentURL.searchParams.get('id');
+            // Comparaison entre l'id du produit actuel et ceux de tous les produits en vente jusqu'à trouver le même, puis ajoute le nombre d'articles voulus dans le panier
+            for (let i = 0; i < cartTempo.length; i++) {
+                if (idToTest === cartTempo[i].id) {
+                    cartTempo[i].count += parseInt(articleNumber.value);
+                }
+            }
+            // Retransfère l'array temporaire dans l'array permanent
+            setCartperma(cartTempo);
+            console.log(localStorage.getItem('cartPerma'));
+            // Envoie vers la page du panier
+            window.open('./panier.html', '_self');
+        });
+    };
+};
+
+// Fonction qui ajoute un eventListener submit sur le formulaire de commande s'il existe sur la page
+const checkDoesOrderFormExist = () => {
+    if (orderForm !== null) {
+        orderForm.addEventListener('submit', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            // Récupère dans des const les champs de formulaire et un éventuel message d'alerte
+            const alertExists = document.getElementById('alertMessage');
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const address = document.getElementById('address'); 
+            const city = document.getElementById('city');
+            const email = document.getElementById('email');
+            // Prépare l'URL de la page de confirmation avec les informations des champs de formulaire en paramètres
+            const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value);
+            // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
+            // un message d'alerte n'existe pas encore, en crée un pour signaler à l'utilisateur qu'il ne peut pas commander un panier vide
+            if (totalPriceCalc() > 0) {
+                window.open(orderURL, "_self");
+            } else if (alertExists === null) {
+                const container = document.getElementById('container');
+                const alertRow = document.createElement('div');
+                const alert = document.createElement('div');
+                const alertMessage = document.createElement('h3');
+                alertRow.classList.add('row');
+                alert.classList.add('col-12');
+                alert.appendChild(alertMessage);
+                alertRow.appendChild(alert);
+                container.appendChild(alertRow);
+                alertMessage.textContent = "You can't order emptiness !";
+                alertMessage.setAttribute('id', 'alertMessage');
+            };
+        });
+    };
+};
 
 // Fonctions adaptées aux pages :
+
+// Lance la fonction d'initialisation du panier si possible, quelle que soit la page, pour permettre à un nouvel utilisateur arrivant sur l'une
+// d'elles d'avoir un panier fonctionnel
+cartInitialisation();
 
 // Lancée sur la page index (vue de la liste des produits en vente)
 // Récupération de la liste des produits en vente, création d'une row contenant leurs infos sur la page pour chacun d'entre eux,
@@ -209,39 +274,13 @@ async function getProductDetails() {
             newOption.setAttribute('value', productDetails.colors[i]);
             newOption.textContent = productDetails.colors[i];
             colorChoice.appendChild(newOption);
-        }
+        };
+        checkDoesArticleFormExist();
     } catch (error) {
         const descriptionHolder = document.getElementById('description');
         descriptionHolder.textContent = "Unable to get product details";
     };
 };
-
-// Ajout d'un eventListener submit sur le formulaire d'ajout du nombre d'articles voulus au panier s'il existe sur la page
-if (addCartForm !== null) {
-    addCartForm.addEventListener('submit', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        // Récupération du nombre d'articles à ajouter au panier
-        const articleNumber = document.getElementById('articleNumber');
-        // Récupération de l'array du panier permanent
-        let cartTempo = getCartPerma();
-        console.log(cartTempo);
-        // Récupération de l'id du produit actuel en variable à tester
-        let currentURL = new URL(window.location.href);
-        let idToTest = currentURL.searchParams.get('id');
-        // Comparaison entre l'id du produit actuel et ceux de tous les produits en vente jusqu'à trouver le même, puis ajoute le nombre d'articles voulus dans le panier
-        for (let i = 0; i < cartTempo.length; i++) {
-            if (idToTest === cartTempo[i].id) {
-                cartTempo[i].count += parseInt(articleNumber.value);
-            }
-        }
-        // Retransfère l'array temporaire dans l'array permanent
-        setCartperma(cartTempo);
-        console.log(localStorage.getItem('cartPerma'));
-        // Envoie vers la page du panier
-        window.open('./panier.html', '_self');
-    });
-}
 
 // Lancée au chargement de la page panier, permet de traduire la variable permanente cartPerma en produits visibles sur la page et leur associer 
 // le nombre qu'il y en a dans le panier et leurs infos
@@ -338,7 +377,7 @@ async function getCartDetails() {
                 // Ajoute la row à la page
                 cartList.appendChild(newProduct);
             }
-        }
+        };
         // Affiche le prix final sur la page
         totalPriceCalc();
         totalPriceText.textContent = totalPrice + "€";
@@ -351,44 +390,13 @@ async function getCartDetails() {
             cartInitialisation();
             document.location.reload();
         });
+        checkDoesOrderFormExist();
     } catch (errorResponse) {
         totalPriceText.textContent = "Unable to load cart"
-    }
+    };
 };
 
-// Ajout d'un écouteur d'événement submit sur le formulaire de commande s'il existe sur la page
-if (orderForm !== null) {
-    orderForm.addEventListener('submit', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        // Récupère dans des const les champs de formulaire et un éventuel message d'alerte
-        const alertExists = document.getElementById('alertMessage');
-        const firstName = document.getElementById('firstName');
-        const lastName = document.getElementById('lastName');
-        const address = document.getElementById('address'); 
-        const city = document.getElementById('city');
-        const email = document.getElementById('email');
-        // Prépare l'URL de la page de confirmation avec les informations des champs de formulaire en paramètres
-        const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value);
-        // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
-        // un message d'alerte n'existe pas encore, en crée un pour signaler à l'utilisateur qu'il ne peut pas commander un panier vide
-        if (totalPriceCalc() > 0) {
-            window.open(orderURL, "_self");
-        } else if (alertExists === null) {
-            const container = document.getElementById('container');
-            const alertRow = document.createElement('div');
-            const alert = document.createElement('div');
-            const alertMessage = document.createElement('h3');
-            alertRow.classList.add('row');
-            alert.classList.add('col-12');
-            alert.appendChild(alertMessage);
-            alertRow.appendChild(alert);
-            container.appendChild(alertRow);
-            alertMessage.textContent = "You can't order emptiness !";
-            alertMessage.setAttribute('id', 'alertMessage');
-        }
-    })
-}
+
 
 // Lancée sur la page de confirmation de commande
 // Fonction asynchrone demandant l'envoi d'une requête POST contenant les informations de commande (contact et id des items) au serveur, puis
