@@ -302,12 +302,18 @@ div {
   background-color: seashell;
 }
 
-input:invalid {
-  border: 2px solid red;
+.untouched:invalid {
+  border: 1px solid black;
+}
+.untouched:valid {
+  border: 1px solid black;
 }
 
-input:valid {
-  border: 1px solid black;
+.touched:invalid {
+  border: 2px solid red;
+}
+.touched:valid {
+  border: 2px solid green;
 }
 
 #cart {

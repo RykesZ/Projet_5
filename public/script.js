@@ -54,6 +54,29 @@ const setCartperma = (cartTempo) => {
     localStorage.setItem('cartPerma', JSON.stringify(cartTempo));
 };
 
+// Fonction qui permet d'empêcher l'utilisateur de rentrer des nombres trop grands
+const preventExceedMaxMin = (productCountInput) => {
+    productCountInput.addEventListener('input', (event) => {
+        minValue = parseInt(event.target.getAttribute('min'));
+        maxValue = parseInt(event.target.getAttribute('max'));
+        if (event.target.value < minValue) {
+            event.target.value = minValue;
+        } else if (event.target.value > maxValue) {
+            event.target.value = maxValue;
+        };
+    });
+};
+
+// Fonction qui permet de d'attribuer des classes correspondant à des contours de différentes couleurs 
+// en fonction de la validité des inputs surveillés
+const watchInputValue = (inputsToWatch) => {
+    for (let i = 0; i < inputsToWatch.length; i++) {
+        inputsToWatch[i].addEventListener('blur', (event) => {
+            event.target.classList.replace('untouched', 'touched');
+        });
+    };
+};
+
 // Fonction qui permet de récupérer la liste des produits en vente et leurs infos
 async function requestProductList() {
     const requestPromise = makeRequest('GET', api + '/');
@@ -122,11 +145,13 @@ const fixedEncodeURIComponent = (str) => {
 // Fonction qui ajoute un eventListener submit sur le formulaire d'ajout du nombre d'articles voulus au panier s'il existe sur la page
 const checkDoesArticleFormExist = () => {
     if (addCartForm !== null) {
+        // Récupération de l'input du nombre d'articles à ajouter au panier
+        const articleNumber = document.getElementById('articleNumber');
+        // Appelle la fonction qui empêche les nombres rentrés dans l'input d'être trop grands
+        preventExceedMaxMin(articleNumber);
         addCartForm.addEventListener('submit', function(event) {
             event.stopPropagation();
             event.preventDefault();
-            // Récupération du nombre d'articles à ajouter au panier
-            const articleNumber = document.getElementById('articleNumber');
             // Récupération de l'array du panier permanent
             let cartTempo = getCartPerma();
             console.log(cartTempo);
@@ -151,16 +176,20 @@ const checkDoesArticleFormExist = () => {
 // Fonction qui ajoute un eventListener submit sur le formulaire de commande s'il existe sur la page
 const checkDoesOrderFormExist = () => {
     if (orderForm !== null) {
+        // Récupère dans des const les champs de formulaire et un éventuel message d'alerte
+        const alertExists = document.getElementById('alertMessage');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const address = document.getElementById('address'); 
+        const city = document.getElementById('city');
+        const email = document.getElementById('email');
+        // Stocke ces const dans un array à passer à la fonction qui permettra de surveiller la validité des inputs et appelle celle-ci
+        const inputsToWatch = [firstName, lastName, address, city, email];
+        watchInputValue(inputsToWatch);
+
         orderForm.addEventListener('submit', function(event) {
             event.stopPropagation();
             event.preventDefault();
-            // Récupère dans des const les champs de formulaire et un éventuel message d'alerte
-            const alertExists = document.getElementById('alertMessage');
-            const firstName = document.getElementById('firstName');
-            const lastName = document.getElementById('lastName');
-            const address = document.getElementById('address'); 
-            const city = document.getElementById('city');
-            const email = document.getElementById('email');
             // Prépare l'URL de la page de confirmation avec les informations des champs de formulaire en paramètres
             const orderURL = "./confirmation.html" + "?" + "firstName=" + fixedEncodeURIComponent(firstName.value) + "&lastName=" + fixedEncodeURIComponent(lastName.value) + "&address=" + fixedEncodeURIComponent(address.value) + "&city=" + fixedEncodeURIComponent(city.value) + "&email=" + fixedEncodeURIComponent(email.value);
             // Si le prix du panier > 0 (= panier n'est pas vide), ouvre la page de confirmation de commande avec l'URL préparée, sinon si
@@ -334,6 +363,8 @@ async function getCartDetails() {
                 productCountForm.appendChild(productCountInput);
                 productCount.appendChild(productCountForm);
                 newProduct.appendChild(productCount);
+                preventExceedMaxMin(productCountInput);
+
                 // Modifie la quantité de produits dans cartTempo en fonction de l'input modifié, puis transfère cette valeur dans cartPerma
                 productCountInput.addEventListener("change", function(event) {
                     event.stopPropagation();
@@ -381,7 +412,7 @@ async function getCartDetails() {
         // Affiche le prix final sur la page
         totalPriceCalc();
         totalPriceText.textContent = totalPrice + "€";
-        // Ajoute un écouteur d'événement sur le bouton qui vide le panier et recharge la page
+        // Ajoute un eventListener sur le bouton qui vide le panier et recharge la page
         const emptyButton = document.getElementById("emptyButton");
         emptyButton.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -453,3 +484,4 @@ async function postOrder() {
         priceAnnounce.textContent = "Something went wrong with your order, please try again later."
     };
 };
+
