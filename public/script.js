@@ -67,8 +67,8 @@ const preventExceedMaxMin = (productCountInput) => {
     });
 };
 
-// Fonction qui permet de d'attribuer des classes correspondant à des contours de différentes couleurs 
-// en fonction de la validité des inputs surveillés
+// Fonction qui permet de remplacer la classe .untouched par la classe .touched d'un input pour activer le changement de style
+// de bordure en fonction de la validité de l'input
 const watchInputValue = (inputsToWatch) => {
     for (let i = 0; i < inputsToWatch.length; i++) {
         inputsToWatch[i].addEventListener('blur', (event) => {
