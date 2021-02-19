@@ -434,16 +434,17 @@ async function postOrder() {
     try {
         // Récupère le prix du panier
         let totalPrice = totalPriceCalc();
+        // Récupère les infos contact contenues dans les paramètres de l'URL
+        let currentURL = new URL(window.location.href);
+        let firstName = currentURL.searchParams.get('firstName');
+        let lastName = currentURL.searchParams.get('lastName');
+        let address = currentURL.searchParams.get('address');
+        let city = currentURL.searchParams.get('city');
+        let email = currentURL.searchParams.get('email');
+        console.log(firstName);
         // Teste si le prix du panier est > 0 (=/= un rechargement de la page de confirmation), si oui, le code s'exécute
         // normalement, sinon il redirige vers la page d'accueil
-        if (totalPrice > 0) {
-            // Récupère les infos contact contenues dans les paramètres de l'URL
-            let currentURL = new URL(window.location.href);
-            let firstName = currentURL.searchParams.get('firstName');
-            let lastName = currentURL.searchParams.get('lastName');
-            let address = currentURL.searchParams.get('address');
-            let city = currentURL.searchParams.get('city');
-            let email = currentURL.searchParams.get('email');
+        if (totalPrice > 0 && firstName !== null && lastName !== null && address !== null && city !== null && email !== null) {
             // Crée un objet contact qui sera envoyé au serveur avec la requête
             let contact = {
                 firstName: firstName,
@@ -480,7 +481,9 @@ async function postOrder() {
             window.location.replace("../../index.html");
         }
     } catch (error) {
+        const mainTitle = document.getElementById("mainTitle");
         const priceAnnounce = document.getElementById('priceAnnounce');
+        mainTitle.textContent = "Oops..."
         priceAnnounce.textContent = "Something went wrong with your order, please try again later."
     };
 };
