@@ -72,6 +72,7 @@ const preventExceedMaxMin = (productCountInput) => {
 const watchInputValue = (inputsToWatch) => {
     for (let i = 0; i < inputsToWatch.length; i++) {
         inputsToWatch[i].addEventListener('blur', (event) => {
+            event.stopPropagation();
             event.target.classList.replace('untouched', 'touched');
         });
     };
@@ -173,6 +174,26 @@ const checkDoesArticleFormExist = () => {
     };
 };
 
+// Fonction qui vérifie si l'expression testée contient autre chose que des chiffres ou des lettres
+const onlyLetters = (inputToTest) => {
+    const regexp = /^[a-zA-Z0-9]+$/;
+    if(inputToTest.value.match(regexp)) {
+        return true;
+    } else {
+        return false;
+    };
+};
+
+// Fonction qui vérifie si le format de l'expression testée correspond à celui d'un email
+const checkEmailFormat = (emailToTest) => {
+    const regexpEmail = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if(emailToTest.value.match(regexpEmail)) {
+        return true;
+    } else {
+        return false;
+    };
+};
+
 // Fonction qui ajoute un eventListener submit sur le formulaire de commande s'il existe sur la page
 const checkDoesOrderFormExist = () => {
     if (orderForm !== null) {
@@ -183,10 +204,34 @@ const checkDoesOrderFormExist = () => {
         const address = document.getElementById('address'); 
         const city = document.getElementById('city');
         const email = document.getElementById('email');
-        // Stocke ces const dans un array à passer à la fonction qui permettra de surveiller la validité des inputs et appelle celle-ci
+        // Stocke ces const dans un array à passer à la fonction qui permettra de surveiller si un input a été sélectionné 
+        // par l'utilisateur et appelle celle-ci
         const inputsToWatch = [firstName, lastName, address, city, email];
         watchInputValue(inputsToWatch);
-
+        // Stocke ces const dans un array à passer à la fonction qui permettra de surveiller si la valeur de l'input
+        // rempli par l'utilisateur ne contient pas de caractères spéciaux
+        const inputToTest = [firstName, lastName, address, city];
+        for (i = 0; i < inputToTest.length; i++) {
+            inputToTest[i].addEventListener('blur', (event) => {
+                event.stopPropagation();
+                let checkOnlyLetters = onlyLetters(event.target);
+            if (checkOnlyLetters === true) {
+                event.target.setCustomValidity("");
+            } else {
+                event.target.setCustomValidity("Please use only letters and numbers.");
+            }
+            })
+        }
+        // Ajout d'un eventListener sur l'input d'email pour tester la validité de son format avec un regexp
+        email.addEventListener('blur', (event) => {
+            event.stopPropagation();
+            let checkEmailFormatValidity = checkEmailFormat(event.target);
+            if (checkEmailFormatValidity === true) {
+                event.target.setCustomValidity("");
+            } else {
+                event.target.setCustomValidity("Please enter a valid email.");
+            }
+        })
         orderForm.addEventListener('submit', function(event) {
             event.stopPropagation();
             event.preventDefault();
