@@ -125,6 +125,7 @@ async function cartInitialisation() {
     }
 };
 
+// Fonction qui convertit la valeur en centime qui lui est passée en euros
 const centsToEuros = (valueInCents) => {
     return valueInCents/100;
 }
