@@ -125,6 +125,10 @@ async function cartInitialisation() {
     }
 };
 
+const centsToEuros = (valueInCents) => {
+    return valueInCents/100;
+}
+
 // Fonction de calcul du prix total du panier : récupère index par index le prix de l'item et son nombre dans le panier,
 // multiplie les deux et ajoute le résultat au prix total
 const totalPriceCalc = () => {
@@ -176,7 +180,7 @@ const checkDoesArticleFormExist = () => {
 
 // Fonction qui vérifie si l'expression testée contient autre chose que des chiffres ou des lettres
 const onlyLetters = (inputToTest) => {
-    const regexp = /^[a-zA-Z0-9]+$/;
+    const regexp = /^[a-zA-Z0-9 ]+$/;
     if(inputToTest.value.match(regexp)) {
         return true;
     } else {
@@ -296,7 +300,7 @@ async function getProductList() {
             const productPrice = document.createElement("div");
             productPrice.classList.add("col-3", "col-md-2");
             const productPriceText = document.createElement("p");
-            productPriceText.textContent = productList[i].price + "€";
+            productPriceText.textContent = centsToEuros(productList[i].price) + "€";
             productPrice.appendChild(productPriceText);
             newProduct.appendChild(productPrice);
             // Crée la colonne image
@@ -340,7 +344,7 @@ async function getProductDetails() {
         imageHolder.setAttribute('src', productDetails.imageUrl);
         imageHolder.classList.add('productImage');
         nameHolder.textContent = productDetails.name;
-        priceHolder.textContent = "Price : " + productDetails.price + "€";
+        priceHolder.textContent = "Price : " + centsToEuros(productDetails.price) + "€";
         descriptionHolder.textContent = productDetails.description;
         // Ajoute le choix des options de personnalisation
         for (let i = 0; i < productDetails.colors.length; ++i) {
@@ -385,7 +389,7 @@ async function getCartDetails() {
                 const productPrice = document.createElement("div");
                 productPrice.classList.add("col-3");
                 const productPriceText = document.createElement("p");
-                productPriceText.textContent = productList[i].price + "€";
+                productPriceText.textContent = centsToEuros(productList[i].price) + "€";
                 productPrice.appendChild(productPriceText);
                 newProduct.appendChild(productPrice);
 
@@ -419,7 +423,7 @@ async function getCartDetails() {
                             cartTempo[a].count = parseInt(productCountInput.value);
                             setCartperma(cartTempo);
                             totalPriceCalc();
-                            totalPriceText.textContent = totalPrice + "€";
+                            totalPriceText.textContent = centsToEuros(totalPrice) + "€";
                         };
                     };
                 });
@@ -447,7 +451,7 @@ async function getCartDetails() {
                     // Retire la row de la page
                     cartList.removeChild(newProduct);
                     totalPriceCalc();
-                    totalPriceText.textContent = totalPrice + "€";
+                    totalPriceText.textContent = centsToEuros(totalPrice) + "€";
                 });
                 newProduct.appendChild(removeArticle);
                 // Ajoute la row à la page
@@ -456,7 +460,7 @@ async function getCartDetails() {
         };
         // Affiche le prix final sur la page
         totalPriceCalc();
-        totalPriceText.textContent = totalPrice + "€";
+        totalPriceText.textContent = centsToEuros(totalPrice) + "€";
         // Ajoute un eventListener sur le bouton qui vide le panier et recharge la page
         const emptyButton = document.getElementById("emptyButton");
         emptyButton.addEventListener("click", function(event) {
@@ -517,7 +521,7 @@ async function postOrder() {
             // un id de confirmation de commande, et que sa commande lui a coûté tant
             const priceAnnounce = document.getElementById('priceAnnounce');
             const orderIdAnnounce = document.getElementById('orderIdAnnounce');
-            priceAnnounce.textContent = "You have ordered for " + totalPrice + "€ in goods.";
+            priceAnnounce.textContent = "You have ordered for " + centsToEuros(totalPrice) + "€ in goods.";
             orderIdAnnounce.textContent = "Your order id is " + orderConfirmation.orderId + ". Keep it preciously !" ;
             // Enlève la sécurité de la fonction d'initialisation du panier et appelle celle-ci pour reset le panier
             localStorage.setItem('initialised', 'false');
