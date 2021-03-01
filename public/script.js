@@ -182,7 +182,9 @@ const checkDoesArticleFormExist = () => {
 // Fonction qui vérifie si l'expression testée contient autre chose que des chiffres ou des lettres
 const onlyLetters = (inputToTest) => {
     const regexp = /^[a-zA-Z0-9 ]+$/;
-    if(inputToTest.value.match(regexp)) {
+    console.log(inputToTest);
+    if(inputToTest.match(regexp)) {
+        console.log("checkwentgood");
         return true;
     } else {
         return false;
@@ -192,7 +194,9 @@ const onlyLetters = (inputToTest) => {
 // Fonction qui vérifie si le format de l'expression testée correspond à celui d'un email
 const checkEmailFormat = (emailToTest) => {
     const regexpEmail = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if(emailToTest.value.match(regexpEmail)) {
+    console.log(emailToTest);
+    if(emailToTest.match(regexpEmail)) {
+        console.log("thischeckwentgoodtoo");
         return true;
     } else {
         return false;
@@ -219,8 +223,8 @@ const checkDoesOrderFormExist = () => {
         for (i = 0; i < inputToTest.length; i++) {
             inputToTest[i].addEventListener('blur', (event) => {
                 event.stopPropagation();
-                let checkOnlyLetters = onlyLetters(event.target);
-            if (checkOnlyLetters === true) {
+                let checkOnlyLetters = onlyLetters(event.target.value);
+            if (checkOnlyLetters) {
                 event.target.setCustomValidity("");
             } else {
                 event.target.setCustomValidity("Please use only letters and numbers.");
@@ -230,8 +234,8 @@ const checkDoesOrderFormExist = () => {
         // Ajout d'un eventListener sur l'input d'email pour tester la validité de son format avec un regexp
         email.addEventListener('blur', (event) => {
             event.stopPropagation();
-            let checkEmailFormatValidity = checkEmailFormat(event.target);
-            if (checkEmailFormatValidity === true) {
+            let checkEmailFormatValidity = checkEmailFormat(event.target.value);
+            if (checkEmailFormatValidity) {
                 event.target.setCustomValidity("");
             } else {
                 event.target.setCustomValidity("Please enter a valid email.");
@@ -492,9 +496,26 @@ async function postOrder() {
         let city = currentURL.searchParams.get('city');
         let email = currentURL.searchParams.get('email');
         console.log(firstName);
-        // Teste si le prix du panier est > 0 (=/= un rechargement de la page de confirmation), et si les champs de contact sont présents,
+        // Teste si le prix du panier est > 0 (=/= un rechargement de la page de confirmation), et si les champs de contact sont présents et corrects,
         // si oui, le code s'exécute normalement, sinon il redirige vers la page d'accueil
-        if (totalPrice > 0 && firstName !== null && lastName !== null && address !== null && city !== null && email !== null) {
+        if (totalPrice > 0 && firstName !== null && lastName !== null && address !== null && city !== null && email !== null && firstName.length <= 50 && lastName.length <= 50 && address.length <= 100 && city.length <= 58 && email.length <= 50) {
+            console.log("sofarsogood");
+            // Vérifie que ces infos de contact ne contiennent que des lettres & chiffres
+            const inputToTest = [firstName, lastName, address, city];
+            for (i = 0; i < inputToTest.length; i++) {
+                console.log(inputToTest[i]);
+                let checkOnlyLetters = onlyLetters(inputToTest[i]);
+                if (!checkOnlyLetters) {
+                    window.location.replace("../../index.html");
+                }
+            }
+            console.log("sofarsogood2");
+            // Vérifie que cet email est conforme au modèle
+            let checkEmailFormatValidity = checkEmailFormat(email);
+            if (!checkEmailFormatValidity) {
+                window.location.replace("../../index.html");
+            }
+            console.log("sofarsogood3");
             // Crée un objet contact qui sera envoyé au serveur avec la requête
             let contact = {
                 firstName: firstName,
